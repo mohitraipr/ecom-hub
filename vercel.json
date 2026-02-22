@@ -21,7 +21,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.ecom-hub.in/api/:path*"
+      "destination": "https://ecom-hub-backend-637801554994.asia-south1.run.app/api/:path*"
     }
   ]
 }
