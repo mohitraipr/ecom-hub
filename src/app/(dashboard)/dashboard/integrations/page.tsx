@@ -34,12 +34,12 @@ export default function IntegrationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white">Integrations</h1>
-          <p className="text-ink-400 mt-1">Connect your platforms to start receiving data</p>
+          <h1 className="text-3xl font-bold text-[#1a1a2e]">Integrations</h1>
+          <p className="text-[#64748b] mt-1">Connect your platforms to start receiving data</p>
         </div>
         <Link
-          href="/integrations/new"
-          className="px-4 py-2 bg-saffron-500 text-white font-medium rounded-lg hover:bg-saffron-600 transition-colors flex items-center gap-2"
+          href="/dashboard/integrations/new"
+          className="px-4 py-2 bg-saffron-500 text-white font-medium rounded-lg hover:bg-saffron-600 transition-colors flex items-center gap-2 shadow-sm"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -50,26 +50,26 @@ export default function IntegrationsPage() {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600">
           {error}
         </div>
       )}
 
       {/* Integrations List */}
       {integrations.length === 0 ? (
-        <div className="bg-ink-900/50 border border-ink-800 rounded-xl p-12 text-center">
-          <div className="w-20 h-20 rounded-full bg-ink-800 flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-ink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-white border border-[#e5e7eb] rounded-xl p-12 text-center shadow-sm">
+          <div className="w-20 h-20 rounded-full bg-[#f1f5f9] flex items-center justify-center mx-auto mb-6">
+            <svg className="w-10 h-10 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">No integrations yet</h2>
-          <p className="text-ink-400 max-w-md mx-auto mb-6">
+          <h2 className="text-xl font-semibold text-[#1a1a2e] mb-2">No integrations yet</h2>
+          <p className="text-[#64748b] max-w-md mx-auto mb-6">
             Connect your EasyEcom account to start receiving real-time inventory data and automate your workflow.
           </p>
           <Link
-            href="/integrations/new"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-saffron-500 text-white font-semibold rounded-lg hover:bg-saffron-600 transition-colors"
+            href="/dashboard/integrations/new"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-saffron-500 text-white font-semibold rounded-lg hover:bg-saffron-600 transition-colors shadow-sm"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -86,25 +86,25 @@ export default function IntegrationsPage() {
             return (
               <div
                 key={integration.id}
-                className="bg-ink-900/50 border border-ink-800 rounded-xl p-6"
+                className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md">
                       <span className="text-white font-bold text-xl">
                         {platformInfo.name.charAt(0)}
                       </span>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-white">{platformInfo.name}</h3>
-                      <p className="text-ink-400 text-sm">
+                      <h3 className="text-lg font-semibold text-[#1a1a2e]">{platformInfo.name}</h3>
+                      <p className="text-[#64748b] text-sm">
                         {integration.testMode ? 'Test mode' : 'Live'} •
                         {integration.lastValidatedAt
                           ? ` Last validated ${new Date(integration.lastValidatedAt).toLocaleDateString()}`
                           : ' Not validated yet'}
                       </p>
                       {integration.lastError && (
-                        <p className="text-red-400 text-sm mt-1">{integration.lastError}</p>
+                        <p className="text-red-600 text-sm mt-1">{integration.lastError}</p>
                       )}
                     </div>
                   </div>
@@ -120,7 +120,7 @@ export default function IntegrationsPage() {
                       {(integration.status === 'active' || integration.status === 'paused') && (
                         <button
                           onClick={() => handlePauseResume(integration)}
-                          className="p-2 text-ink-400 hover:text-white hover:bg-ink-800 rounded-lg transition-colors"
+                          className="p-2 text-[#64748b] hover:text-[#1a1a2e] hover:bg-[#f1f5f9] rounded-lg transition-colors"
                           title={integration.status === 'paused' ? 'Resume' : 'Pause'}
                         >
                           {integration.status === 'paused' ? (
@@ -137,8 +137,8 @@ export default function IntegrationsPage() {
                       )}
 
                       <Link
-                        href={`/integrations/${integration.id}`}
-                        className="p-2 text-ink-400 hover:text-white hover:bg-ink-800 rounded-lg transition-colors"
+                        href={`/dashboard/integrations/${integration.id}`}
+                        className="p-2 text-[#64748b] hover:text-[#1a1a2e] hover:bg-[#f1f5f9] rounded-lg transition-colors"
                         title="Settings"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,7 +149,7 @@ export default function IntegrationsPage() {
 
                       <button
                         onClick={() => handleDelete(integration)}
-                        className="p-2 text-ink-400 hover:text-red-400 hover:bg-ink-800 rounded-lg transition-colors"
+                        className="p-2 text-[#64748b] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -167,36 +167,36 @@ export default function IntegrationsPage() {
 
       {/* Available Platforms */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-4">Available Platforms</h2>
+        <h2 className="text-lg font-semibold text-[#1a1a2e] mb-4">Available Platforms</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link
-            href="/integrations/new?platform=easyecom"
-            className="bg-ink-900/50 border border-ink-800 rounded-xl p-6 hover:border-saffron-500/50 transition-colors cursor-pointer block"
+            href="/dashboard/integrations/new?platform=easyecom"
+            className="bg-white border border-[#e5e7eb] rounded-xl p-6 hover:border-saffron-300 hover:shadow-md transition-all cursor-pointer block shadow-sm"
           >
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xl">E</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-white">EasyEcom</h3>
-                <p className="text-ink-400 text-sm">Inventory management & order tracking</p>
+                <h3 className="text-lg font-semibold text-[#1a1a2e]">EasyEcom</h3>
+                <p className="text-[#64748b] text-sm">Inventory management & order tracking</p>
               </div>
-              <svg className="w-5 h-5 text-ink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 text-[#94a3b8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </Link>
 
-          <div className="bg-ink-900/50 border border-ink-800 rounded-xl p-6 opacity-50 cursor-not-allowed">
+          <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 opacity-60 cursor-not-allowed shadow-sm">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md">
                 <span className="text-white font-bold text-xl">U</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-white">Uniware</h3>
-                <p className="text-ink-400 text-sm">Coming soon</p>
+                <h3 className="text-lg font-semibold text-[#1a1a2e]">Uniware</h3>
+                <p className="text-[#64748b] text-sm">Coming soon</p>
               </div>
-              <span className="px-2 py-1 bg-ink-800 text-ink-400 text-xs rounded-full">Soon</span>
+              <span className="px-2 py-1 bg-[#f1f5f9] text-[#64748b] text-xs rounded-full">Soon</span>
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/AuthContext';
 import { Sidebar } from '@/components/dashboard/Sidebar';
-import { LogoSimple } from '@/components/Logo';
+import { Logo } from '@/components/Logo';
 
 export default function DashboardLayout({
   children,
@@ -23,12 +23,12 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-ink-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-saffron-500 to-saffron-600 flex items-center justify-center animate-pulse">
             <span className="text-white font-bold text-xl">E</span>
           </div>
-          <p className="text-ink-400">Loading...</p>
+          <p className="text-[#64748b]">Loading...</p>
         </div>
       </div>
     );
@@ -39,19 +39,19 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-ink-950">
+    <div className="min-h-screen bg-[#f8f9fa]">
       {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-ink-900 border-b border-ink-800 px-4 py-3">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#e5e7eb] px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 text-ink-400 hover:text-white rounded-lg hover:bg-ink-800"
+            className="p-2 text-[#64748b] hover:text-[#1a1a2e] rounded-lg hover:bg-[#f1f5f9]"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <LogoSimple />
+          <Logo size="sm" />
           <div className="w-10" />
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function DashboardLayout({
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

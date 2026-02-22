@@ -46,17 +46,17 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-3xl font-bold text-[#1a1a2e]">
           Welcome back, {user?.name?.split(' ')[0]}
         </h1>
-        <p className="text-ink-400 mt-1">
+        <p className="text-[#64748b] mt-1">
           Here&apos;s what&apos;s happening with {tenant?.name}
         </p>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-ink-900/50 border border-ink-800 rounded-xl p-6">
+        <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-saffron-500/10 flex items-center justify-center">
               <svg className="w-6 h-6 text-saffron-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,22 +66,22 @@ export default function DashboardPage() {
             <div>
               {isLoading ? (
                 <div className="animate-pulse">
-                  <div className="h-8 w-16 bg-ink-700 rounded mb-1"></div>
-                  <div className="h-4 w-24 bg-ink-700 rounded"></div>
+                  <div className="h-8 w-16 bg-[#e5e7eb] rounded mb-1"></div>
+                  <div className="h-4 w-24 bg-[#e5e7eb] rounded"></div>
                 </div>
               ) : (
                 <>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-[#1a1a2e]">
                     {overview?.stats.totalSkus ?? '--'}
                   </p>
-                  <p className="text-sm text-ink-400">Total SKUs Tracked</p>
+                  <p className="text-sm text-[#64748b]">Total SKUs Tracked</p>
                 </>
               )}
             </div>
           </div>
         </div>
 
-        <div className="bg-ink-900/50 border border-ink-800 rounded-xl p-6">
+        <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center">
               <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -91,22 +91,22 @@ export default function DashboardPage() {
             <div>
               {isLoading ? (
                 <div className="animate-pulse">
-                  <div className="h-8 w-16 bg-ink-700 rounded mb-1"></div>
-                  <div className="h-4 w-24 bg-ink-700 rounded"></div>
+                  <div className="h-8 w-16 bg-[#e5e7eb] rounded mb-1"></div>
+                  <div className="h-4 w-24 bg-[#e5e7eb] rounded"></div>
                 </div>
               ) : (
                 <>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-[#1a1a2e]">
                     {(overview?.stats.outOfStockSkus ?? 0) + (overview?.stats.lowStockSkus ?? 0)}
                   </p>
-                  <p className="text-sm text-ink-400">Low Stock Alerts</p>
+                  <p className="text-sm text-[#64748b]">Low Stock Alerts</p>
                 </>
               )}
             </div>
           </div>
         </div>
 
-        <div className="bg-ink-900/50 border border-ink-800 rounded-xl p-6">
+        <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center">
               <svg className="w-6 h-6 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,15 +116,15 @@ export default function DashboardPage() {
             <div>
               {walletLoading ? (
                 <div className="animate-pulse">
-                  <div className="h-8 w-16 bg-ink-700 rounded mb-1"></div>
-                  <div className="h-4 w-24 bg-ink-700 rounded"></div>
+                  <div className="h-8 w-16 bg-[#e5e7eb] rounded mb-1"></div>
+                  <div className="h-4 w-24 bg-[#e5e7eb] rounded"></div>
                 </div>
               ) : (
                 <>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-2xl font-bold text-[#1a1a2e]">
                     {wallet?.freeWebhooksRemaining ?? 50}
                   </p>
-                  <p className="text-sm text-ink-400">Free Webhooks Left</p>
+                  <p className="text-sm text-[#64748b]">Free Webhooks Left</p>
                 </>
               )}
             </div>
@@ -134,25 +134,25 @@ export default function DashboardPage() {
 
       {/* Wallet Balance Card */}
       {wallet && (
-        <div className="bg-gradient-to-r from-saffron-500/10 to-teal-500/10 border border-saffron-500/20 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-saffron-50 to-teal-50 border border-saffron-200 rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-saffron-500/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-saffron-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 rounded-xl bg-saffron-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-saffron-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-ink-400">Wallet Balance</p>
-                <p className="text-2xl font-bold text-white">Rs{wallet.balance.toFixed(2)}</p>
+                <p className="text-sm text-[#64748b]">Wallet Balance</p>
+                <p className="text-2xl font-bold text-[#1a1a2e]">₹{wallet.balance.toFixed(2)}</p>
                 {wallet.isPaused && (
-                  <p className="text-sm text-red-400">Paused - Add funds to continue</p>
+                  <p className="text-sm text-red-600">Paused - Add funds to continue</p>
                 )}
               </div>
             </div>
             <Link
-              href="/wallet"
-              className="px-4 py-2 bg-saffron-500 text-white font-medium rounded-lg hover:bg-saffron-600 transition-colors"
+              href="/dashboard/wallet"
+              className="px-4 py-2 bg-saffron-500 text-white font-medium rounded-lg hover:bg-saffron-600 transition-colors shadow-sm"
             >
               {wallet.balance < 100 ? 'Add Funds' : 'View Wallet'}
             </Link>
@@ -162,32 +162,32 @@ export default function DashboardPage() {
 
       {/* Services */}
       <div>
-        <h2 className="text-xl font-semibold text-white mb-4">Your Services</h2>
+        <h2 className="text-xl font-semibold text-[#1a1a2e] mb-4">Your Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((service) => (
             <Link
               key={service.name}
               href={service.href}
-              className={`group bg-ink-900/50 border border-ink-800 rounded-xl p-6 hover:border-${service.color}-500/50 transition-all`}
+              className={`group bg-white border border-[#e5e7eb] rounded-xl p-6 hover:border-saffron-300 hover:shadow-md transition-all shadow-sm`}
             >
               <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-xl bg-${service.color}-500/10 flex items-center justify-center text-${service.color}-500`}>
+                <div className={`w-14 h-14 rounded-xl bg-${service.color}-100 flex items-center justify-center text-${service.color}-600`}>
                   {service.icon}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-semibold text-white group-hover:text-saffron-500 transition-colors">
+                    <h3 className="text-lg font-semibold text-[#1a1a2e] group-hover:text-saffron-600 transition-colors">
                       {service.name}
                     </h3>
                     {service.status === 'coming_soon' && (
-                      <span className="px-2 py-0.5 text-xs font-medium bg-ink-800 text-ink-400 rounded-full">
+                      <span className="px-2 py-0.5 text-xs font-medium bg-[#f1f5f9] text-[#64748b] rounded-full">
                         Coming Soon
                       </span>
                     )}
                   </div>
-                  <p className="text-ink-400 text-sm mt-1">{service.description}</p>
+                  <p className="text-[#64748b] text-sm mt-1">{service.description}</p>
                 </div>
-                <svg className="w-5 h-5 text-ink-600 group-hover:text-saffron-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-[#94a3b8] group-hover:text-saffron-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </div>
@@ -198,17 +198,17 @@ export default function DashboardPage() {
 
       {/* Setup CTA - Only show if no active integration */}
       {!hasActiveIntegration && !integrationsLoading && (
-        <div className="bg-gradient-to-r from-saffron-500/10 to-teal-500/10 border border-saffron-500/20 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-saffron-50 to-teal-50 border border-saffron-200 rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-white">Complete Your Setup</h3>
-              <p className="text-ink-400 text-sm mt-1">
+              <h3 className="text-lg font-semibold text-[#1a1a2e]">Complete Your Setup</h3>
+              <p className="text-[#64748b] text-sm mt-1">
                 Connect your EasyEcom account to start receiving real-time inventory data
               </p>
             </div>
             <Link
-              href="/integrations/new"
-              className="px-4 py-2 bg-saffron-500 text-white font-medium rounded-lg hover:bg-saffron-600 transition-colors"
+              href="/dashboard/integrations/new"
+              className="px-4 py-2 bg-saffron-500 text-white font-medium rounded-lg hover:bg-saffron-600 transition-colors shadow-sm"
             >
               Set Up Integration
             </Link>
@@ -218,19 +218,19 @@ export default function DashboardPage() {
 
       {/* Recent Activity */}
       {overview?.recentActivity && overview.recentActivity.length > 0 && (
-        <div className="bg-ink-900/50 border border-ink-800 rounded-xl p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">Recent Activity</h2>
+        <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-[#1a1a2e] mb-4">Recent Activity</h2>
           <div className="space-y-3">
             {overview.recentActivity.slice(0, 5).map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-center gap-3 py-2 border-b border-ink-800 last:border-0"
+                className="flex items-center gap-3 py-2 border-b border-[#e5e7eb] last:border-0"
               >
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                  activity.type === 'webhook' ? 'bg-saffron-500/10 text-saffron-500' :
-                  activity.type === 'recharge' ? 'bg-emerald-500/10 text-emerald-500' :
-                  activity.type === 'alert' ? 'bg-red-500/10 text-red-500' :
-                  'bg-teal-500/10 text-teal-500'
+                  activity.type === 'webhook' ? 'bg-saffron-100 text-saffron-600' :
+                  activity.type === 'recharge' ? 'bg-emerald-100 text-emerald-600' :
+                  activity.type === 'alert' ? 'bg-red-100 text-red-600' :
+                  'bg-teal-100 text-teal-600'
                 }`}>
                   {activity.type === 'webhook' && (
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -254,10 +254,10 @@ export default function DashboardPage() {
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-white text-sm">{activity.title}</p>
-                  <p className="text-ink-500 text-xs">{activity.description}</p>
+                  <p className="text-[#1a1a2e] text-sm">{activity.title}</p>
+                  <p className="text-[#94a3b8] text-xs">{activity.description}</p>
                 </div>
-                <span className="text-ink-500 text-xs">
+                <span className="text-[#94a3b8] text-xs">
                   {new Date(activity.timestamp).toLocaleTimeString('en-IN', {
                     hour: '2-digit',
                     minute: '2-digit',
