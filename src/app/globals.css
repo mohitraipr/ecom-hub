@@ -1,38 +1,204 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --secondary: #10b981;
-  --accent: #f59e0b;
-  --danger: #ef4444;
-  --warning: #f97316;
-  --success: #22c55e;
+  /* Primary - Deep Charcoal (Trust, Professionalism) */
+  --ink: #1a1a2e;
+  --ink-light: #16213e;
+
+  /* Accent - Saffron/Turmeric (Energy, Indian identity) */
+  --saffron: #ff6b35;
+  --saffron-dark: #e85a2a;
+  --saffron-light: #ff8c5a;
+  --saffron-glow: rgba(255, 107, 53, 0.15);
+
+  /* Secondary - Teal (Growth, Freshness) */
+  --teal: #00d9a5;
+  --teal-dark: #00b386;
+  --teal-light: #4de8c2;
+
+  /* Neutrals */
+  --cream: #faf8f5;
+  --stone: #e8e4de;
+  --slate: #64748b;
+
+  /* Status Colors */
+  --status-red: #ef4444;
+  --status-orange: #f97316;
+  --status-green: #22c55e;
+
+  /* Legacy support */
+  --background: var(--cream);
+  --foreground: var(--ink);
+  --primary: var(--saffron);
+  --primary-dark: var(--saffron-dark);
+  --secondary: var(--teal);
+  --accent: var(--saffron);
+  --danger: var(--status-red);
+  --warning: var(--status-orange);
+  --success: var(--status-green);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-outfit);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-clash);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans), 'Outfit', system-ui, sans-serif;
 }
 
-/* Tooltip styles */
+/* Display font for headings */
+.font-display {
+  font-family: var(--font-clash), 'Clash Display', system-ui, sans-serif;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+/* Floating particles animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translateY(-25px) translateX(5px);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px var(--saffron-glow);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--saffron-glow), 0 0 60px var(--saffron-glow);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes data-flow {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes node-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Step indicator animations */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-data-flow {
+  animation: data-flow 2s ease-in-out infinite;
+}
+
+.animate-node-pulse {
+  animation: node-pulse 2s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.6s ease-out forwards;
+}
+
+.step-active {
+  animation: pulse 2s infinite;
+}
+
+/* Staggered animation delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* ==================== GRAIN TEXTURE ==================== */
+
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ==================== TOOLTIP STYLES ==================== */
+
 .tooltip {
   position: relative;
   display: inline-block;
@@ -41,10 +207,10 @@ body {
 .tooltip .tooltip-text {
   visibility: hidden;
   width: 280px;
-  background-color: #1f2937;
+  background-color: var(--ink);
   color: #fff;
   text-align: left;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 12px 16px;
   position: absolute;
   z-index: 100;
@@ -55,7 +221,7 @@ body {
   transition: opacity 0.3s, visibility 0.3s;
   font-size: 0.875rem;
   line-height: 1.4;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(26, 26, 46, 0.3);
 }
 
 .tooltip .tooltip-text::after {
@@ -66,7 +232,7 @@ body {
   margin-left: -8px;
   border-width: 8px;
   border-style: solid;
-  border-color: #1f2937 transparent transparent transparent;
+  border-color: var(--ink) transparent transparent transparent;
 }
 
 .tooltip:hover .tooltip-text {
@@ -74,59 +240,92 @@ body {
   opacity: 1;
 }
 
-/* Step indicator animations */
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
+/* ==================== STATUS COLORS ==================== */
 
-.step-active {
-  animation: pulse 2s infinite;
-}
-
-/* Status colors */
 .status-red {
   background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-  border-left: 4px solid #ef4444;
+  border-left: 4px solid var(--status-red);
 }
 
 .status-orange {
   background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
-  border-left: 4px solid #f97316;
+  border-left: 4px solid var(--status-orange);
 }
 
 .status-green {
   background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-  border-left: 4px solid #22c55e;
+  border-left: 4px solid var(--status-green);
 }
 
-/* Card hover effects */
+/* ==================== CARD STYLES ==================== */
+
 .feature-card {
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 107, 53, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(26, 26, 46, 0.15);
 }
 
-/* Gradient backgrounds */
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+/* ==================== GRADIENT BACKGROUNDS ==================== */
+
+.gradient-saffron {
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-dark) 100%);
+}
+
+.gradient-teal {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+}
+
+.gradient-ink {
+  background: linear-gradient(135deg, var(--ink) 0%, var(--ink-light) 100%);
+}
+
+.gradient-hero {
+  background:
+    radial-gradient(ellipse at 20% 50%, var(--saffron-glow) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(0, 217, 165, 0.1) 0%, transparent 50%),
+    linear-gradient(180deg, var(--cream) 0%, #fff 100%);
+}
+
+/* Legacy support */
 .gradient-primary {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-dark) 100%);
 }
 
 .gradient-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
 }
 
-/* Demo container */
+/* ==================== DEMO CONTAINER ==================== */
+
 .demo-container {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #fff 0%, var(--cream) 100%);
+  border: 1px solid var(--stone);
   border-radius: 16px;
 }
 
-/* Flow diagram connector */
+/* ==================== FLOW DIAGRAM ==================== */
+
 .flow-connector {
   position: relative;
 }
@@ -137,6 +336,104 @@ body {
   right: -20px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: var(--slate);
   font-size: 1.25rem;
+}
+
+/* ==================== BUTTONS ==================== */
+
+.btn-saffron {
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-dark) 100%);
+  color: white;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px var(--saffron-glow);
+}
+
+.btn-saffron:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 107, 53, 0.3);
+}
+
+.btn-ink {
+  background: var(--ink);
+  color: white;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-ink:hover {
+  background: var(--ink-light);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  border: 2px solid var(--stone);
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  border-color: var(--saffron);
+  color: var(--saffron);
+}
+
+/* ==================== HUB VISUALIZATION ==================== */
+
+.hub-node {
+  fill: var(--saffron);
+  filter: drop-shadow(0 0 8px var(--saffron-glow));
+}
+
+.hub-node-secondary {
+  fill: var(--teal);
+  filter: drop-shadow(0 0 8px rgba(0, 217, 165, 0.3));
+}
+
+.hub-line {
+  stroke: var(--stone);
+  stroke-width: 2;
+  stroke-dasharray: 8 4;
+}
+
+.hub-line-active {
+  stroke: var(--saffron);
+  stroke-width: 2;
+  stroke-dasharray: 100;
+  animation: data-flow 2s ease-in-out infinite;
+}
+
+/* ==================== SCROLLBAR ==================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--stone);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--slate);
+}
+
+/* ==================== SELECTION ==================== */
+
+::selection {
+  background: var(--saffron-glow);
+  color: var(--ink);
 }

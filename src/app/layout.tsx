@@ -1,21 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "ecom-hub.in | E-commerce Automation Tools",
-  description: "Powerful automation tools for e-commerce sellers - Out of Stock Management, Ajio Mail Replying, and more.",
+  description: "Powerful automation tools for e-commerce sellers - Out of Stock Management, Ajio Mail Replying, and more. Built for Indian e-commerce businesses.",
+  keywords: ["e-commerce", "automation", "inventory management", "email automation", "India", "EasyEcom", "Ajio"],
 };
 
 export default function RootLayout({
@@ -25,29 +15,71 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <head>
+        {/* Google Fonts via CDN */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        {/* Clash Display from Fontshare */}
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap"
+          rel="stylesheet"
+        />
+        <style>{`
+          :root {
+            --font-outfit: 'Outfit', system-ui, sans-serif;
+            --font-clash: 'Clash Display', system-ui, sans-serif;
+          }
+          body {
+            font-family: var(--font-outfit);
+          }
+          .font-display {
+            font-family: var(--font-clash);
+          }
+        `}</style>
+      </head>
+      <body className="antialiased">
+        <Providers>
+        {/* Navigation */}
+        <nav className="sticky top-0 z-50 bg-[#faf8f5]/90 backdrop-blur-md border-b border-[#e8e4de]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">E</span>
-                </div>
-                <span className="font-semibold text-lg">ecom-hub.in</span>
+              <Link href="/" className="flex items-center">
+                <Logo size="md" />
               </Link>
 
-              <div className="flex items-center gap-6">
-                <Link href="/out-of-stock" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center gap-8">
+                <Link
+                  href="/out-of-stock"
+                  className="text-[#64748b] hover:text-[#1a1a2e] transition-colors font-medium relative group"
+                >
                   Out of Stock
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6b35] transition-all group-hover:w-full" />
                 </Link>
-                <Link href="/ajio-mail" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
+                <Link
+                  href="/ajio-mail"
+                  className="text-[#64748b] hover:text-[#1a1a2e] transition-colors font-medium relative group"
+                >
                   Ajio Mail
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#00d9a5] transition-all group-hover:w-full" />
                 </Link>
                 <Link
                   href="/get-started"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="btn-saffron text-sm py-2.5 px-5"
+                >
+                  Get Started
+                </Link>
+              </div>
+
+              {/* Mobile menu button */}
+              <div className="md:hidden">
+                <Link
+                  href="/get-started"
+                  className="bg-[#ff6b35] text-white px-4 py-2 rounded-lg text-sm font-medium"
                 >
                   Get Started
                 </Link>
@@ -58,42 +90,75 @@ export default function RootLayout({
 
         <main>{children}</main>
 
-        <footer className="bg-gray-900 text-white py-12 mt-20">
+        {/* Footer */}
+        <footer className="bg-[#1a1a2e] text-white py-16 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">E</span>
-                  </div>
-                  <span className="font-semibold text-lg">ecom-hub.in</span>
-                </div>
-                <p className="text-gray-400 text-sm">
-                  Powerful automation tools for e-commerce sellers.
+            <div className="grid md:grid-cols-4 gap-12">
+              {/* Brand */}
+              <div className="md:col-span-2">
+                <LogoSimple className="mb-4" />
+                <p className="text-[#64748b] text-sm max-w-sm leading-relaxed">
+                  Powerful automation tools designed for Indian e-commerce sellers.
+                  Manage inventory, automate responses, and grow your business.
                 </p>
               </div>
 
+              {/* Features */}
               <div>
-                <h3 className="font-semibold mb-4">Features</h3>
-                <ul className="space-y-2 text-gray-400 text-sm">
-                  <li><Link href="/out-of-stock" className="hover:text-white transition-colors">Out of Stock Management</Link></li>
-                  <li><Link href="/ajio-mail" className="hover:text-white transition-colors">Ajio Mail Replying</Link></li>
+                <h3 className="font-semibold mb-4 text-[#ff6b35]">Features</h3>
+                <ul className="space-y-3 text-[#94a3b8] text-sm">
+                  <li>
+                    <Link href="/out-of-stock" className="hover:text-white transition-colors flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-[#ff6b35] rounded-full" />
+                      Out of Stock Management
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/ajio-mail" className="hover:text-white transition-colors flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-[#00d9a5] rounded-full" />
+                      Ajio Mail Replying
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/get-started" className="hover:text-white transition-colors flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-[#64748b] rounded-full" />
+                      Get Started Guide
+                    </Link>
+                  </li>
                 </ul>
               </div>
 
+              {/* Contact */}
               <div>
-                <h3 className="font-semibold mb-4">Contact</h3>
-                <p className="text-gray-400 text-sm">
-                  Questions? Reach out to get started with your automation journey.
+                <h3 className="font-semibold mb-4 text-[#00d9a5]">Get in Touch</h3>
+                <p className="text-[#94a3b8] text-sm leading-relaxed">
+                  Ready to automate your e-commerce operations?
+                  Check out our documentation to get started.
                 </p>
+                <Link
+                  href="/get-started"
+                  className="inline-flex items-center gap-2 mt-4 text-[#ff6b35] hover:text-[#ff8c5a] transition-colors text-sm font-medium"
+                >
+                  View Setup Guide
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
               </div>
             </div>
 
-            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-              © 2026 ecom-hub.in. All rights reserved.
+            <div className="border-t border-[#2d2d44] mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-[#64748b] text-sm">
+                &copy; {new Date().getFullYear()} ecom-hub.in. All rights reserved.
+              </p>
+              <div className="flex items-center gap-2 text-[#64748b] text-xs">
+                <span className="w-2 h-2 bg-[#22c55e] rounded-full animate-pulse" />
+                Systems operational
+              </div>
             </div>
           </div>
         </footer>
+        </Providers>
       </body>
     </html>
   );
