@@ -12,10 +12,12 @@ export type IntegrationStatus = 'setup' | 'testing' | 'active' | 'paused' | 'err
 export interface Integration {
   id: string;
   platform: Platform;
+  name?: string;
   status: IntegrationStatus;
   testMode: boolean;
-  webhookUrl: string;
+  webhookUrl?: string;
   lastValidatedAt: string | null;
+  lastWebhookAt?: string | null;
   lastError: string | null;
   createdAt: string;
 }

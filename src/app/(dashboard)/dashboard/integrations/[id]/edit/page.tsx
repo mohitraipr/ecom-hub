@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { useIntegrations } from '@/lib/hooks/useIntegrations';
+import { useIntegrationDetail } from '@/lib/hooks/useIntegrations';
+import { updateCredentials } from '@/lib/api/integrations';
 
 export default function EditIntegrationPage() {
   const router = useRouter();
   const params = useParams();
   const integrationId = params.id as string;
-  const { integrations, isLoading: integrationsLoading } = useIntegrations();
+  const { integration, webhookUrl, isLoading: integrationsLoading, loadWebhookUrl, refresh } = useIntegrationDetail(integrationId);
 
   const [accessToken, setAccessToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -17,10 +18,17 @@ export default function EditIntegrationPage() {
   const [success, setSuccess] = useState('');
   const [copied, setCopied] = useState<'inventory' | 'order' | null>(null);
 
-  const integration = integrations.find(i => i.id === integrationId);
+  // Load webhook URL when component mounts
+  useEffect(() => {
+    if (integrationId) {
+      loadWebhookUrl();
+    }
+  }, [integrationId, loadWebhookUrl]);
 
-  // Demo webhook URL (in production this would come from the backend)
-  const webhookBaseUrl = `https://api.ecom-hub.in/webhook/${integrationId}`;
+  // Get base webhook URL (remove /inventory suffix)
+  const webhookBaseUrl = webhookUrl
+    ? webhookUrl.replace('/inventory', '')
+    : (integration?.webhookUrl ? integration.webhookUrl.replace('/inventory', '') : '');
 
   const copyToClipboard = (text: string, type: 'inventory' | 'order') => {
     navigator.clipboard.writeText(text);
@@ -39,9 +47,9 @@ export default function EditIntegrationPage() {
     setSuccess('');
 
     try {
-      // In production, this would call the API to update the integration
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await updateCredentials(integrationId, { accessToken: accessToken.trim() });
       setSuccess('Settings saved successfully!');
+      await refresh();
       setTimeout(() => {
         router.push('/dashboard/integrations');
       }, 1500);

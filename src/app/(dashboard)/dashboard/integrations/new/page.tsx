@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useIntegrations } from '@/lib/hooks/useIntegrations';
+import { config } from '@/lib/config';
 
-type Step = 'platform' | 'account-token' | 'webhook-setup' | 'access-token' | 'complete';
+type Step = 'platform' | 'credentials' | 'webhook-setup' | 'complete';
 
 const STEPS: { id: Step; title: string; description: string }[] = [
   { id: 'platform', title: 'Select Platform', description: 'Choose your e-commerce platform' },
-  { id: 'account-token', title: 'Account Token', description: 'Enter your EasyEcom account token' },
+  { id: 'credentials', title: 'Enter Credentials', description: 'Enter your EasyEcom tokens' },
   { id: 'webhook-setup', title: 'Webhook Setup', description: 'Configure webhooks in EasyEcom' },
-  { id: 'access-token', title: 'Access Token', description: 'Enter the access token you set' },
   { id: 'complete', title: 'Complete', description: "You're all set!" },
 ];
 
@@ -29,56 +29,28 @@ export default function NewIntegrationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [webhookBaseUrl, setWebhookBaseUrl] = useState('');
+  const [integrationId, setIntegrationId] = useState('');
   const [copied, setCopied] = useState<'inventory' | 'order' | null>(null);
 
-  // Generate webhook URL when account token is submitted
-  const generateWebhookUrl = () => {
-    // In production, this would come from the backend after creating the integration
-    // For now, generate a demo URL based on a random token
-    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    return `https://api.ecom-hub.in/webhook/${token}`;
-  };
-
-  // If platform is pre-selected, skip to account-token step
+  // If platform is pre-selected, skip to credentials step
   useEffect(() => {
     if (platform) {
-      setCurrentStep('account-token');
+      setCurrentStep('credentials');
     }
   }, []);
 
   const handleSelectPlatform = (p: 'easyecom') => {
     setPlatform(p);
-    setCurrentStep('account-token');
+    setCurrentStep('credentials');
   };
 
-  const handleSubmitAccountToken = async () => {
+  const handleSubmitCredentials = async () => {
     if (!accountToken.trim()) {
       setError('Please enter your Account Token');
       return;
     }
-
-    setIsLoading(true);
-    setError('');
-
-    try {
-      // Generate webhook URL for this seller
-      const url = generateWebhookUrl();
-      setWebhookBaseUrl(url);
-      setCurrentStep('webhook-setup');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate webhook URL');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleWebhookSetupComplete = () => {
-    setCurrentStep('access-token');
-  };
-
-  const handleSubmitAccessToken = async () => {
     if (!accessToken.trim()) {
-      setError('Please enter the Access Token you configured in EasyEcom');
+      setError('Please enter your Access Token');
       return;
     }
 
@@ -86,13 +58,21 @@ export default function NewIntegrationPage() {
     setError('');
 
     try {
-      // Create the integration with all credentials
-      await create({
+      // Create the integration in the backend - it returns the webhook URL
+      const integration = await create({
         platform: platform!,
         apiKey: accountToken.trim(), // Account Token (for API calls)
         accessToken: accessToken.trim(), // Access Token (for webhook validation)
       });
-      setCurrentStep('complete');
+
+      // Extract the base webhook URL from the backend response
+      // The backend returns: https://api.ecom-hub.in/webhook/{token}/inventory
+      // We need the base: https://api.ecom-hub.in/webhook/{token}
+      const webhookUrl = integration.webhookUrl || '';
+      const baseUrl = webhookUrl.replace('/inventory', '');
+      setWebhookBaseUrl(baseUrl);
+      setIntegrationId(integration.id);
+      setCurrentStep('webhook-setup');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create integration');
     } finally {
@@ -200,42 +180,36 @@ export default function NewIntegrationPage() {
           </div>
         )}
 
-        {/* Step 2: Account Token */}
-        {currentStep === 'account-token' && (
+        {/* Step 2: Enter Credentials */}
+        {currentStep === 'credentials' && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-[#1a1a2e]">Enter Account Token</h2>
+              <h2 className="text-xl font-semibold text-[#1a1a2e]">Enter Your Credentials</h2>
               <p className="text-[#64748b] text-sm mt-1">
-                Your Account Token is used to identify your EasyEcom account
+                We need your EasyEcom credentials to set up the integration
               </p>
             </div>
 
-            {/* Instructions */}
+            {/* Account Token Instructions */}
             <div className="bg-[#faf8f5] border border-[#e5e7eb] rounded-lg p-4">
               <h3 className="text-sm font-medium text-[#1a1a2e] mb-3">How to find your Account Token:</h3>
-              <ol className="text-[#64748b] text-sm space-y-3">
+              <ol className="text-[#64748b] text-sm space-y-2">
                 <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
-                  <div>
-                    Log into your <span className="text-[#1a1a2e] font-medium">EasyEcom Dashboard</span>
-                  </div>
+                  <span className="w-5 h-5 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
+                  <div>Log into <span className="text-[#1a1a2e] font-medium">EasyEcom Dashboard</span></div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
-                  <div>
-                    Click your <span className="text-[#1a1a2e] font-medium">profile icon</span> in the top-right corner
-                  </div>
+                  <span className="w-5 h-5 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
+                  <div>Click your <span className="text-[#1a1a2e] font-medium">profile icon</span> (top-right)</div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">3</span>
-                  <div>
-                    Your <span className="text-[#1a1a2e] font-medium">Account Token</span> is displayed in the dropdown menu
-                  </div>
+                  <span className="w-5 h-5 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">3</span>
+                  <div>Copy your <span className="text-[#1a1a2e] font-medium">Account Token</span> from dropdown</div>
                 </li>
               </ol>
             </div>
 
-            {/* Form */}
+            {/* Account Token Input */}
             <div>
               <label className="block text-sm font-medium text-[#1a1a2e] mb-2">
                 Account Token
@@ -249,6 +223,31 @@ export default function NewIntegrationPage() {
               />
             </div>
 
+            {/* Access Token Instructions */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-blue-800 mb-3">About Access Token:</h3>
+              <p className="text-blue-700 text-sm mb-2">
+                The Access Token is used to verify webhook requests. Go to <span className="font-medium">Settings → Other Settings → Webhook Settings</span> in EasyEcom to find or set it.
+              </p>
+              <p className="text-blue-600 text-xs">
+                If you haven&apos;t set one yet, create any secure token and save it in both places.
+              </p>
+            </div>
+
+            {/* Access Token Input */}
+            <div>
+              <label className="block text-sm font-medium text-[#1a1a2e] mb-2">
+                Access Token
+              </label>
+              <input
+                type="password"
+                value={accessToken}
+                onChange={(e) => setAccessToken(e.target.value)}
+                placeholder="Paste your Access Token here"
+                className="w-full px-4 py-3 bg-white border border-[#e5e7eb] rounded-lg text-[#1a1a2e] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-[#ff6b35]"
+              />
+            </div>
+
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setCurrentStep('platform')}
@@ -257,8 +256,8 @@ export default function NewIntegrationPage() {
                 Back
               </button>
               <button
-                onClick={handleSubmitAccountToken}
-                disabled={isLoading || !accountToken}
+                onClick={handleSubmitCredentials}
+                disabled={isLoading || !accountToken || !accessToken}
                 className="px-6 py-2 bg-[#ff6b35] text-white font-medium rounded-lg hover:bg-[#e55a2b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isLoading ? (
@@ -267,10 +266,10 @@ export default function NewIntegrationPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    Generating...
+                    Creating...
                   </>
                 ) : (
-                  'Generate Webhook URLs'
+                  'Create Integration'
                 )}
               </button>
             </div>
@@ -285,6 +284,16 @@ export default function NewIntegrationPage() {
               <p className="text-[#64748b] text-sm mt-1">
                 Copy these URLs and paste them into your EasyEcom webhook settings
               </p>
+            </div>
+
+            {/* Success message */}
+            <div className="bg-[#00d9a5]/10 border border-[#00d9a5]/30 rounded-lg p-4">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-[#00d9a5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-[#00a67c] font-medium">Integration created successfully!</p>
+              </div>
             </div>
 
             {/* Webhook URLs */}
@@ -377,200 +386,38 @@ export default function NewIntegrationPage() {
             {/* Configuration Instructions */}
             <div className="bg-[#faf8f5] border border-[#e5e7eb] rounded-lg p-4">
               <h3 className="text-sm font-medium text-[#1a1a2e] mb-3">Steps to configure in EasyEcom:</h3>
-              <ol className="text-[#64748b] text-sm space-y-3">
+              <ol className="text-[#64748b] text-sm space-y-2">
                 <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
-                  <div>
-                    Go to <span className="text-[#ff6b35] font-medium">Settings → Other Settings → Webhook Settings</span>
-                  </div>
+                  <span className="w-5 h-5 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
+                  <div>Go to <span className="text-[#ff6b35] font-medium">Settings → Other Settings → Webhook Settings</span></div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
-                  <div>
-                    Paste the <span className="text-[#1a1a2e] font-medium">Inventory Webhook URL</span> for inventory events
-                  </div>
+                  <span className="w-5 h-5 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
+                  <div>Paste the <span className="text-[#1a1a2e] font-medium">Inventory Webhook URL</span></div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">3</span>
-                  <div>
-                    Add another webhook with the <span className="text-[#1a1a2e] font-medium">Order Webhook URL</span> for order events
-                  </div>
+                  <span className="w-5 h-5 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">3</span>
+                  <div>Add another webhook with the <span className="text-[#1a1a2e] font-medium">Order Webhook URL</span></div>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">4</span>
-                  <div>
-                    <span className="text-[#1a1a2e] font-medium">Set your Access Token</span> in EasyEcom&apos;s webhook settings (you choose this yourself)
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">5</span>
-                  <div>
-                    Enable the events you want: <span className="text-[#1a1a2e] font-medium">Inventory Updates</span>, <span className="text-[#1a1a2e] font-medium">Order Created</span>, etc.
-                  </div>
+                  <span className="w-5 h-5 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">4</span>
+                  <div>Enable the events: <span className="text-[#1a1a2e] font-medium">Inventory Updates</span>, <span className="text-[#1a1a2e] font-medium">Order Created</span></div>
                 </li>
               </ol>
             </div>
 
-            {/* Important Note */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div className="text-sm">
-                  <p className="text-blue-700 font-medium">Remember your Access Token!</p>
-                  <p className="text-blue-600 mt-1">
-                    You&apos;ll need to enter the Access Token you set in the next step. We use it to verify that webhook requests are genuinely from EasyEcom.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end">
               <button
-                onClick={() => setCurrentStep('account-token')}
-                className="px-4 py-2 text-[#64748b] hover:text-[#1a1a2e] transition-colors"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleWebhookSetupComplete}
+                onClick={handleComplete}
                 className="px-6 py-2 bg-[#ff6b35] text-white font-medium rounded-lg hover:bg-[#e55a2b] transition-colors"
               >
-                I&apos;ve configured the webhooks
+                Go to Integrations
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 4: Access Token */}
-        {currentStep === 'access-token' && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold text-[#1a1a2e]">Enter Your Access Token</h2>
-              <p className="text-[#64748b] text-sm mt-1">
-                Enter the Access Token you configured in EasyEcom&apos;s Webhook Settings
-              </p>
-            </div>
-
-            {/* Instructions */}
-            <div className="bg-[#faf8f5] border border-[#e5e7eb] rounded-lg p-4">
-              <h3 className="text-sm font-medium text-[#1a1a2e] mb-3">Where to find your Access Token:</h3>
-              <ol className="text-[#64748b] text-sm space-y-3">
-                <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
-                  <div>
-                    Go to <span className="text-[#ff6b35] font-medium">Settings → Other Settings → Webhook Settings</span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[#ff6b35]/20 text-[#ff6b35] flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
-                  <div>
-                    Copy the <span className="text-[#1a1a2e] font-medium">Access Token</span> you set when configuring the webhook
-                  </div>
-                </li>
-              </ol>
-            </div>
-
-            {/* Form */}
-            <div>
-              <label className="block text-sm font-medium text-[#1a1a2e] mb-2">
-                Access Token
-              </label>
-              <input
-                type="password"
-                value={accessToken}
-                onChange={(e) => setAccessToken(e.target.value)}
-                placeholder="Paste the Access Token you set in EasyEcom"
-                className="w-full px-4 py-3 bg-white border border-[#e5e7eb] rounded-lg text-[#1a1a2e] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#ff6b35] focus:border-[#ff6b35]"
-              />
-              <p className="text-[#94a3b8] text-xs mt-2">
-                This is the token EasyEcom sends with each webhook request. We use it to verify authenticity.
-              </p>
-            </div>
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setCurrentStep('webhook-setup')}
-                className="px-4 py-2 text-[#64748b] hover:text-[#1a1a2e] transition-colors"
-              >
-                Back
-              </button>
-              <button
-                onClick={handleSubmitAccessToken}
-                disabled={isLoading || !accessToken}
-                className="px-6 py-2 bg-[#ff6b35] text-white font-medium rounded-lg hover:bg-[#e55a2b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    Saving...
-                  </>
-                ) : (
-                  'Complete Setup'
-                )}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 5: Complete */}
-        {currentStep === 'complete' && (
-          <div className="space-y-6 text-center">
-            <div className="w-20 h-20 rounded-full bg-[#00d9a5]/20 flex items-center justify-center mx-auto">
-              <svg className="w-10 h-10 text-[#00d9a5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold text-[#1a1a2e] mb-2">You&apos;re All Set!</h2>
-              <p className="text-[#64748b]">
-                Your EasyEcom integration is now active. You&apos;ll start receiving real-time updates.
-              </p>
-            </div>
-
-            <div className="bg-[#faf8f5] border border-[#e5e7eb] rounded-lg p-4 text-left">
-              <h3 className="text-sm font-medium text-[#1a1a2e] mb-3">What happens next:</h3>
-              <ul className="text-[#64748b] text-sm space-y-2">
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-[#00d9a5] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span><span className="text-[#1a1a2e] font-medium">Inventory data</span> will sync via <code className="text-[#ff6b35] bg-[#ff6b35]/10 px-1 rounded">/inventory</code> webhook</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-[#00d9a5] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span><span className="text-[#1a1a2e] font-medium">Order updates</span> will sync via <code className="text-[#00d9a5] bg-[#00d9a5]/10 px-1 rounded">/order</code> webhook</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-[#00d9a5] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Low stock alerts will be enabled
-                </li>
-                <li className="flex items-start gap-2">
-                  <svg className="w-4 h-4 text-[#00d9a5] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  First 50 webhooks are free (then ₹0.50 per webhook)
-                </li>
-              </ul>
-            </div>
-
-            <button
-              onClick={handleComplete}
-              className="px-8 py-3 bg-[#ff6b35] text-white font-semibold rounded-lg hover:bg-[#e55a2b] transition-colors"
-            >
-              Go to Dashboard
-            </button>
-          </div>
-        )}
+        {/* Step 4: Complete - Now handled by webhook-setup step */}
       </div>
     </div>
   );
