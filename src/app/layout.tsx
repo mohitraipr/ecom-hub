@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import { Providers } from "./providers";
+import { Logo, LogoSimple } from "@/components/Logo";
 
 export const metadata: Metadata = {
   title: "ecom-hub.in | E-commerce Automation Tools",
