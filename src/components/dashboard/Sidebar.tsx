@@ -61,20 +61,20 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { user, tenant, logout } = useAuth();
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-[#e5e7eb] shadow-sm">
+    <div className="flex flex-col h-full bg-[#1e2533]">
       {/* Logo */}
-      <div className="p-4 border-b border-[#e5e7eb]">
+      <div className="p-4 border-b border-[#2a3441]">
         <div className="flex items-center justify-between">
           <Link href="/dashboard" onClick={onClose} className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-saffron-500 to-saffron-600 flex items-center justify-center shadow-md">
+            <div className="w-10 h-10 rounded-lg bg-[#2bbd5e] flex items-center justify-center">
               <span className="text-white font-bold text-lg">E</span>
             </div>
-            <span className="text-xl font-semibold text-[#1a1a2e]">ecom-hub</span>
+            <span className="text-xl font-semibold text-white">ecom-hub</span>
           </Link>
           {onClose && (
             <button
               onClick={onClose}
-              className="lg:hidden p-2 text-[#64748b] hover:text-[#1a1a2e] rounded-lg hover:bg-[#f1f5f9]"
+              className="lg:hidden p-2 text-[#8b9dc3] hover:text-white rounded-lg hover:bg-[#2a3441]"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -85,7 +85,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-3 space-y-1">
         {navigation.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
@@ -93,10 +93,10 @@ export function Sidebar({ onClose }: SidebarProps) {
               key={item.name}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${
                 isActive
-                  ? 'bg-saffron-500/10 text-saffron-600 font-medium'
-                  : 'text-[#64748b] hover:text-[#1a1a2e] hover:bg-[#f1f5f9]'
+                  ? 'bg-[#2bbd5e]/15 text-[#2bbd5e] font-medium'
+                  : 'text-[#a0aec0] hover:text-white hover:bg-[#2a3441]'
               }`}
             >
               {item.icon}
@@ -107,21 +107,21 @@ export function Sidebar({ onClose }: SidebarProps) {
       </nav>
 
       {/* User section */}
-      <div className="p-4 border-t border-[#e5e7eb]">
+      <div className="p-4 border-t border-[#2a3441]">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md">
+          <div className="w-10 h-10 rounded-full bg-[#2bbd5e] flex items-center justify-center">
             <span className="text-white font-semibold">
               {user?.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-[#1a1a2e] truncate">{user?.name}</p>
-            <p className="text-xs text-[#64748b] truncate">{tenant?.name}</p>
+            <p className="text-sm font-medium text-white truncate">{user?.name}</p>
+            <p className="text-xs text-[#8b9dc3] truncate">{tenant?.name}</p>
           </div>
         </div>
         <button
           onClick={() => logout()}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#64748b] hover:text-[#1a1a2e] hover:bg-[#f1f5f9] rounded-lg transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-[#a0aec0] hover:text-white hover:bg-[#2a3441] rounded-lg transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

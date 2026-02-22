@@ -227,19 +227,19 @@ export default function NewIntegrationPage() {
 
             {/* Instructions */}
             <div className="bg-ink-800 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-white mb-2">How to find your credentials:</h3>
-              <ol className="text-ink-400 text-sm space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs">1</span>
-                  Log into your EasyEcom Dashboard
+              <h3 className="text-sm font-medium text-white mb-3">How to find your credentials:</h3>
+              <ol className="text-ink-400 text-sm space-y-3">
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
+                  <div>
+                    <span className="text-white">Account Token</span> - Click your profile icon in the top-right corner of EasyEcom. Your Account Token is visible in the dropdown.
+                  </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs">2</span>
-                  Go to Settings then API Settings
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs">3</span>
-                  Copy your API Key and Access Token
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
+                  <div>
+                    <span className="text-white">Access Token</span> - Go to <span className="text-saffron-400 font-medium">Settings → Other Settings → Webhook Settings</span> and copy your Access Token.
+                  </div>
                 </li>
               </ol>
             </div>
@@ -248,15 +248,16 @@ export default function NewIntegrationPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-ink-300 mb-2">
-                  API Key
+                  Account Token
                 </label>
                 <input
                   type="text"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="Enter your API key"
+                  placeholder="Found in your profile dropdown"
                   className="w-full px-4 py-3 bg-ink-800 border border-ink-600 rounded-lg text-white placeholder-ink-500 focus:outline-none focus:ring-2 focus:ring-saffron-500"
                 />
+                <p className="text-ink-500 text-xs mt-1">Click your profile icon → Account Token is shown in the dropdown</p>
               </div>
 
               <div>
@@ -267,9 +268,10 @@ export default function NewIntegrationPage() {
                   type="password"
                   value={accessToken}
                   onChange={(e) => setAccessToken(e.target.value)}
-                  placeholder="Enter your access token"
+                  placeholder="Found in Webhook Settings"
                   className="w-full px-4 py-3 bg-ink-800 border border-ink-600 rounded-lg text-white placeholder-ink-500 focus:outline-none focus:ring-2 focus:ring-saffron-500"
                 />
+                <p className="text-ink-500 text-xs mt-1">Settings → Other Settings → Webhook Settings → Access Token</p>
               </div>
             </div>
 
@@ -371,53 +373,126 @@ export default function NewIntegrationPage() {
         {currentStep === 'webhook' && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-xl font-semibold text-white">Configure Webhook</h2>
+              <h2 className="text-xl font-semibold text-white">Configure Webhooks</h2>
               <p className="text-ink-400 text-sm mt-1">
-                Set up real-time inventory updates from EasyEcom
+                Set up real-time inventory and order updates from EasyEcom
               </p>
             </div>
 
-            {/* Instructions */}
-            <div className="bg-ink-800 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-white mb-3">Copy this webhook URL:</h3>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={webhookUrl}
-                  readOnly
-                  className="flex-1 px-4 py-2 bg-ink-900 border border-ink-600 rounded-lg text-white text-sm font-mono"
-                />
-                <button
-                  onClick={() => copyToClipboard(webhookUrl)}
-                  className="px-3 py-2 bg-saffron-500 text-white rounded-lg hover:bg-saffron-600 transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                </button>
+            {/* Webhook URLs */}
+            <div className="space-y-4">
+              {/* Inventory Webhook */}
+              <div className="bg-ink-800 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-saffron-500/20 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-saffron-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  </div>
+                  <h3 className="text-sm font-medium text-white">Inventory Webhook URL</h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={webhookUrl ? `${webhookUrl}/inventory` : ''}
+                    readOnly
+                    className="flex-1 px-4 py-2 bg-ink-900 border border-ink-600 rounded-lg text-white text-sm font-mono"
+                  />
+                  <button
+                    onClick={() => copyToClipboard(`${webhookUrl}/inventory`)}
+                    className="px-3 py-2 bg-saffron-500 text-white rounded-lg hover:bg-saffron-600 transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-ink-500 text-xs mt-2">Use this for inventory level updates (stock changes)</p>
+              </div>
+
+              {/* Order Webhook */}
+              <div className="bg-ink-800 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                  </div>
+                  <h3 className="text-sm font-medium text-white">Order Webhook URL</h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={webhookUrl ? `${webhookUrl}/order` : ''}
+                    readOnly
+                    className="flex-1 px-4 py-2 bg-ink-900 border border-ink-600 rounded-lg text-white text-sm font-mono"
+                  />
+                  <button
+                    onClick={() => copyToClipboard(`${webhookUrl}/order`)}
+                    className="px-3 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+                    title="Copy to clipboard"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-ink-500 text-xs mt-2">Use this for order updates (new orders, status changes)</p>
               </div>
             </div>
 
+            {/* Configuration Instructions */}
             <div className="bg-ink-800 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-white mb-2">How to configure:</h3>
-              <ol className="text-ink-400 text-sm space-y-2">
-                <li className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs">1</span>
-                  Go to EasyEcom Dashboard then Settings then Webhook Configuration
+              <h3 className="text-sm font-medium text-white mb-3">How to configure in EasyEcom:</h3>
+              <ol className="text-ink-400 text-sm space-y-3">
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs font-medium">1</span>
+                  <div>
+                    Go to <span className="text-saffron-400 font-medium">Settings → Other Settings → Webhook Settings</span>
+                  </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs">2</span>
-                  Paste the webhook URL above
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs font-medium">2</span>
+                  <div>
+                    For <span className="text-white">Inventory events</span>: Paste the Inventory Webhook URL in the webhook URL field
+                  </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs">3</span>
-                  Enable &quot;Inventory Updates&quot; events
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs font-medium">3</span>
+                  <div>
+                    For <span className="text-white">Order events</span>: Add a separate webhook with the Order Webhook URL
+                  </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="w-5 h-5 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs">4</span>
-                  Click &quot;Send Test&quot; in EasyEcom to verify
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs font-medium">4</span>
+                  <div>
+                    Enable the events you want to receive (e.g., <span className="text-white">Inventory Updates</span>, <span className="text-white">Order Created</span>, <span className="text-white">Order Status Change</span>)
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-6 h-6 rounded-full bg-saffron-500/20 text-saffron-500 flex items-center justify-center flex-shrink-0 text-xs font-medium">5</span>
+                  <div>
+                    Click <span className="text-white">&quot;Test Webhook&quot;</span> to verify each endpoint
+                  </div>
                 </li>
               </ol>
+            </div>
+
+            {/* Important Note */}
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="text-sm">
+                  <p className="text-blue-400 font-medium">Important</p>
+                  <p className="text-ink-400 mt-1">
+                    EasyEcom will send an <span className="text-white">Access-Token</span> header with each webhook request.
+                    We use this to verify the request is authentic. Make sure the Access Token you entered matches what&apos;s configured in EasyEcom.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {webhookVerified && (
@@ -450,7 +525,7 @@ export default function NewIntegrationPage() {
                     Waiting for webhook...
                   </>
                 ) : (
-                  'I\'ve configured the webhook'
+                  'I\'ve configured the webhooks'
                 )}
               </button>
             </div>
@@ -469,7 +544,7 @@ export default function NewIntegrationPage() {
             <div>
               <h2 className="text-2xl font-bold text-white mb-2">You&apos;re All Set!</h2>
               <p className="text-ink-400">
-                Your EasyEcom integration is now active. You&apos;ll start receiving real-time inventory updates.
+                Your EasyEcom integration is now active. You&apos;ll start receiving real-time updates.
               </p>
             </div>
 
@@ -480,7 +555,13 @@ export default function NewIntegrationPage() {
                   <svg className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Inventory data will sync automatically
+                  <span><span className="text-white">Inventory data</span> will sync automatically via <code className="text-saffron-400">/inventory</code> webhook</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <svg className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span><span className="text-white">Order updates</span> will sync via <code className="text-teal-400">/order</code> webhook</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -492,7 +573,7 @@ export default function NewIntegrationPage() {
                   <svg className="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  First 50 webhooks are free
+                  First 50 webhooks are free (then ₹0.50 per webhook)
                 </li>
               </ul>
             </div>

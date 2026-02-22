@@ -166,10 +166,10 @@ export default function WalletPage() {
               </svg>
             </div>
           </div>
-          <div className="mt-4 bg-[#e5e7eb] rounded-full h-2">
+          <div className="mt-4 bg-[#e5e7eb] rounded-full h-2 overflow-hidden">
             <div
               className="bg-teal-500 h-2 rounded-full transition-all"
-              style={{ width: `${((wallet?.freeWebhooksRemaining ?? 50) / 50) * 100}%` }}
+              style={{ width: `${Math.min(100, Math.max(0, ((wallet?.freeWebhooksRemaining ?? 50) / 50) * 100))}%` }}
             />
           </div>
         </div>

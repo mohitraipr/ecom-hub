@@ -145,9 +145,58 @@ export async function register(data: RegisterData): Promise<LoginResponse> {
 }
 
 /**
+ * Demo user data for testing
+ */
+const DEMO_USER: LoginResponse = {
+  success: true,
+  data: {
+    user: {
+      id: 'demo-user-1',
+      email: 'demo@ecom-hub.in',
+      name: 'Demo User',
+      role: 'owner',
+      emailVerified: true,
+    },
+    tenant: {
+      id: 'demo-tenant-1',
+      name: 'Demo Store',
+      slug: 'demo-store',
+    },
+    tokens: {
+      accessToken: 'demo-access-token',
+      refreshToken: 'demo-refresh-token',
+      expiresIn: 3600,
+    },
+  },
+};
+
+/**
  * Login user
  */
 export async function login(email: string, password: string): Promise<LoginResponse> {
+  // Demo mode: allow demo login when backend unavailable
+  if (email === 'demo@ecom-hub.in' && password === 'demo123') {
+    try {
+      const response = await fetch(`${config.apiBaseUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setTokens(result.data.tokens.accessToken, result.data.tokens.refreshToken);
+        return result;
+      }
+    } catch {
+      // Backend unavailable, use demo mode
+    }
+
+    // Fallback to demo data
+    setTokens(DEMO_USER.data.tokens.accessToken, DEMO_USER.data.tokens.refreshToken);
+    return DEMO_USER;
+  }
+
   const response = await fetch(`${config.apiBaseUrl}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -224,6 +273,14 @@ export async function logout(): Promise<void> {
 export async function getCurrentUser(): Promise<{ user: User; tenant: Tenant } | null> {
   const token = getAccessToken();
   if (!token) return null;
+
+  // Demo mode: return demo user if demo token
+  if (token === 'demo-access-token') {
+    return {
+      user: DEMO_USER.data.user,
+      tenant: DEMO_USER.data.tenant,
+    };
+  }
 
   try {
     const result = await authFetch<{ success: boolean; data: { user: User; tenant: Tenant } }>(
