@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getRevenue, RevenueData } from '@/lib/api/admin';
 
 export default function AdminRevenuePage() {
@@ -8,6 +8,18 @@ export default function AdminRevenuePage() {
   const [period, setPeriod] = useState(30);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // Calculate totals from daily data
+  const totals = useMemo(() => {
+    if (!revenue?.daily) return { totalRevenue: 0, totalTransactions: 0 };
+    return revenue.daily.reduce(
+      (acc, day) => ({
+        totalRevenue: acc.totalRevenue + day.revenue,
+        totalTransactions: acc.totalTransactions + day.transactions,
+      }),
+      { totalRevenue: 0, totalTransactions: 0 }
+    );
+  }, [revenue]);
 
   useEffect(() => {
     async function loadData() {
@@ -69,7 +81,7 @@ export default function AdminRevenuePage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">Rs{revenue?.total.toFixed(0) ?? 0}</p>
+              <p className="text-2xl font-bold text-white">₹{totals.totalRevenue.toFixed(0)}</p>
               <p className="text-sm text-ink-400">Total Revenue</p>
             </div>
           </div>
@@ -83,7 +95,7 @@ export default function AdminRevenuePage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{revenue?.transactionCount ?? 0}</p>
+              <p className="text-2xl font-bold text-white">{totals.totalTransactions}</p>
               <p className="text-sm text-ink-400">Transactions</p>
             </div>
           </div>
@@ -138,9 +150,9 @@ export default function AdminRevenuePage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-white font-semibold">Rs{tenant.totalSpend.toFixed(0)}</p>
+                  <p className="text-white font-semibold">₹{tenant.totalSpend.toFixed(0)}</p>
                   <p className="text-ink-500 text-sm">
-                    {((tenant.totalSpend / (revenue.total || 1)) * 100).toFixed(1)}% of total
+                    {((tenant.totalSpend / (totals.totalRevenue || 1)) * 100).toFixed(1)}% of total
                   </p>
                 </div>
               </div>
@@ -170,7 +182,7 @@ export default function AdminRevenuePage() {
                 <p className="text-ink-500 text-sm">Webhook processing</p>
               </div>
             </div>
-            <p className="text-white font-semibold">Rs{revenue?.total.toFixed(0) ?? 0}</p>
+            <p className="text-white font-semibold">₹{totals.totalRevenue.toFixed(0)}</p>
           </div>
           <div className="flex items-center justify-between p-4 bg-ink-800/50 rounded-lg opacity-50">
             <div className="flex items-center gap-3">
