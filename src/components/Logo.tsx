@@ -6,9 +6,10 @@ interface LogoProps {
   size?: "sm" | "md" | "lg";
   showText?: boolean;
   className?: string;
+  variant?: "light" | "dark";
 }
 
-export function Logo({ size = "md", showText = true, className = "" }: LogoProps) {
+export function Logo({ size = "md", showText = true, className = "", variant = "light" }: LogoProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const sizes = {
@@ -170,7 +171,7 @@ export function Logo({ size = "md", showText = true, className = "" }: LogoProps
       {showText && (
         <span
           className={`font-display font-bold ${textSize} tracking-tight transition-colors duration-300`}
-          style={{ color: "#1a1a2e" }}
+          style={{ color: variant === "dark" ? "#ffffff" : "#1a1a2e" }}
         >
           ecom
           <span style={{ color: "#ff6b35" }}>-</span>
