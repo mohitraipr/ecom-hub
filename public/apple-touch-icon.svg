@@ -1,0 +1,33 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with rounded corners -->
+  <rect width="180" height="180" rx="40" fill="#1a1a2e"/>
+
+  <!-- Scaled logo centered -->
+  <g transform="translate(42, 42)">
+    <!-- Background hexagon -->
+    <path d="M48 8L85 28V68L48 88L11 68V28L48 8Z" fill="#16213e"/>
+
+    <!-- Outer nodes -->
+    <circle cx="28" cy="28" r="7" fill="#ff6b35"/>
+    <circle cx="68" cy="28" r="7" fill="#00d9a5"/>
+    <circle cx="28" cy="68" r="7" fill="#ff6b35"/>
+    <circle cx="68" cy="68" r="7" fill="#00d9a5"/>
+
+    <!-- Connection lines -->
+    <line x1="28" y1="28" x2="48" y2="48" stroke="#ff6b35" stroke-width="3" stroke-opacity="0.5"/>
+    <line x1="68" y1="28" x2="48" y2="48" stroke="#00d9a5" stroke-width="3" stroke-opacity="0.5"/>
+    <line x1="28" y1="68" x2="48" y2="48" stroke="#ff6b35" stroke-width="3" stroke-opacity="0.5"/>
+    <line x1="68" y1="68" x2="48" y2="48" stroke="#00d9a5" stroke-width="3" stroke-opacity="0.5"/>
+
+    <!-- Center hub node -->
+    <circle cx="48" cy="48" r="12" fill="url(#appSaffronGrad)"/>
+    <circle cx="48" cy="48" r="5" fill="white"/>
+  </g>
+
+  <defs>
+    <linearGradient id="appSaffronGrad" x1="36" y1="36" x2="60" y2="60">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#e85a2a"/>
+    </linearGradient>
+  </defs>
+</svg>

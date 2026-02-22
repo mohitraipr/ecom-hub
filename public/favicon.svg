@@ -1,0 +1,27 @@
+<svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background hexagon -->
+  <path d="M24 4L42.5 14V34L24 44L5.5 34V14L24 4Z" fill="#1a1a2e"/>
+
+  <!-- Outer nodes -->
+  <circle cx="14" cy="14" r="3.5" fill="#ff6b35"/>
+  <circle cx="34" cy="14" r="3.5" fill="#00d9a5"/>
+  <circle cx="14" cy="34" r="3.5" fill="#ff6b35"/>
+  <circle cx="34" cy="34" r="3.5" fill="#00d9a5"/>
+
+  <!-- Connection lines -->
+  <line x1="14" y1="14" x2="24" y2="24" stroke="#ff6b35" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="34" y1="14" x2="24" y2="24" stroke="#00d9a5" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="14" y1="34" x2="24" y2="24" stroke="#ff6b35" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="34" y1="34" x2="24" y2="24" stroke="#00d9a5" stroke-width="1.5" stroke-opacity="0.5"/>
+
+  <!-- Center hub node -->
+  <circle cx="24" cy="24" r="6" fill="url(#saffronGrad)"/>
+  <circle cx="24" cy="24" r="2.5" fill="white"/>
+
+  <defs>
+    <linearGradient id="saffronGrad" x1="18" y1="18" x2="30" y2="30">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#e85a2a"/>
+    </linearGradient>
+  </defs>
+</svg>

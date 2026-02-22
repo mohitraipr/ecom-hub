@@ -44,6 +44,45 @@
   --font-sans: var(--font-outfit);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-clash);
+
+  /* Ink color palette (dark charcoal tones) */
+  --color-ink-50: #e8e8ec;
+  --color-ink-100: #d1d1d9;
+  --color-ink-200: #a3a3b3;
+  --color-ink-300: #75758d;
+  --color-ink-400: #5a5a72;
+  --color-ink-500: #3d3d54;
+  --color-ink-600: #2d2d44;
+  --color-ink-700: #232338;
+  --color-ink-800: #1d1d30;
+  --color-ink-900: #16213e;
+  --color-ink-950: #1a1a2e;
+
+  /* Saffron color palette (vibrant orange) */
+  --color-saffron-50: #fff7ed;
+  --color-saffron-100: #ffedd5;
+  --color-saffron-200: #fed7aa;
+  --color-saffron-300: #fdba74;
+  --color-saffron-400: #ff8c5a;
+  --color-saffron-500: #ff6b35;
+  --color-saffron-600: #e85a2a;
+  --color-saffron-700: #c2410c;
+  --color-saffron-800: #9a3412;
+  --color-saffron-900: #7c2d12;
+  --color-saffron-950: #431407;
+
+  /* Teal color palette (fresh green) */
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbef;
+  --color-teal-200: #99f6e0;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #4de8c2;
+  --color-teal-500: #00d9a5;
+  --color-teal-600: #00b386;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+  --color-teal-950: #042f2e;
 }
 
 body {

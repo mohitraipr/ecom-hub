@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: "ecom-hub.in | E-commerce Automation Tools",
   description: "Powerful automation tools for e-commerce sellers - Out of Stock Management, Ajio Mail Replying, and more. Built for Indian e-commerce businesses.",
   keywords: ["e-commerce", "automation", "inventory management", "email automation", "India", "EasyEcom", "Ajio"],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.svg",
+  },
 };
 
 export default function RootLayout({

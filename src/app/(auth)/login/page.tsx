@@ -138,14 +138,6 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
-
-      {/* Demo credentials hint */}
-      <div className="mt-6 p-4 bg-ink-800/50 rounded-xl border border-ink-700/50">
-        <p className="text-ink-400 text-sm text-center">
-          <span className="text-ink-300 font-medium">Demo:</span>{' '}
-          admin@ecom-hub.in / admin123
-        </p>
-      </div>
     </>
   );
 }
