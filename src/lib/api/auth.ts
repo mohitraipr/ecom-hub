@@ -10,6 +10,7 @@ export interface User {
   name: string;
   role: 'owner' | 'admin' | 'viewer';
   emailVerified: boolean;
+  isPlatformAdmin?: boolean;
 }
 
 export interface Tenant {
