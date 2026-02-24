@@ -105,6 +105,22 @@ export interface RevenueData {
   }[];
 }
 
+export interface FailedPayment {
+  id: number;
+  tenantId: number;
+  tenantName: string | null;
+  tenantEmail: string | null;
+  razorpayOrderId: string | null;
+  razorpayPaymentId: string | null;
+  amount: number;
+  errorMessage: string;
+  paymentData: Record<string, unknown>;
+  resolved: boolean;
+  resolvedAt: string | null;
+  notes: string | null;
+  createdAt: string;
+}
+
 /**
  * Get platform-wide statistics
  */
@@ -216,4 +232,23 @@ export async function getRevenue(days?: number): Promise<RevenueData> {
   const endpoint = days ? `/api/admin/revenue?days=${days}` : '/api/admin/revenue';
   const result = await authFetch<{ success: boolean; data: RevenueData }>(endpoint);
   return result.data;
+}
+
+/**
+ * Get failed payment attempts
+ */
+export async function getFailedPayments(limit?: number): Promise<FailedPayment[]> {
+  const endpoint = limit ? `/api/admin/failed-payments?limit=${limit}` : '/api/admin/failed-payments';
+  const result = await authFetch<{ success: boolean; data: { failedPayments: FailedPayment[] } }>(endpoint);
+  return result.data.failedPayments;
+}
+
+/**
+ * Mark a failed payment as resolved
+ */
+export async function resolveFailedPayment(paymentId: number, notes?: string): Promise<void> {
+  await authFetch<{ success: boolean }>(`/api/admin/failed-payments/${paymentId}/resolve`, {
+    method: 'POST',
+    body: JSON.stringify({ notes }),
+  });
 }
