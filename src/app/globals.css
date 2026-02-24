@@ -86,9 +86,19 @@
 }
 
 body {
-  background: var(--cream);
+  background: #f9fafb;
   color: var(--ink);
   font-family: var(--font-sans), 'Outfit', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Display font for headings */

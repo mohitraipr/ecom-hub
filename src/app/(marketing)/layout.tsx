@@ -1,46 +1,108 @@
+"use client";
+
 import Link from "next/link";
-import { Logo, LogoSimple } from "@/components/Logo";
+import { useState } from "react";
+
+const services = [
+  { name: "Out of Stock", href: "/dashboard/out-of-stock", description: "Inventory tracking & alerts" },
+  { name: "Orders", href: "/dashboard/orders", description: "Multi-marketplace order management" },
+  { name: "Catalog AI", href: "/dashboard/catalog", description: "AI-powered product cataloging", badge: "New" },
+  { name: "QC Pass", href: "/dashboard/qc-pass", description: "Myntra QC automation", badge: "New" },
+  { name: "Ajio Mail", href: "/dashboard/ajio-mail", description: "Email automation with videos" },
+];
 
 export default function MarketingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+
   return (
     <>
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-[#faf8f5]/90 backdrop-blur-md border-b border-[#e8e4de]">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center">
-              <Logo size="md" />
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                <span className="text-white font-bold text-lg">E</span>
+              </div>
+              <span className="font-bold text-xl text-gray-900">ecom-hub</span>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-1">
+              {/* Services Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setServicesOpen(!servicesOpen)}
+                  onBlur={() => setTimeout(() => setServicesOpen(false), 200)}
+                  className="flex items-center gap-1 px-4 py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors rounded-lg hover:bg-gray-50"
+                >
+                  Services
+                  <svg className={`w-4 h-4 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {servicesOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
+                    {services.map((service) => (
+                      <Link
+                        key={service.name}
+                        href={service.href}
+                        className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-900">{service.name}</span>
+                            {service.badge && (
+                              <span className="px-2 py-0.5 text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full">
+                                {service.badge}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-500">{service.description}</p>
+                        </div>
+                      </Link>
+                    ))}
+                    <div className="border-t border-gray-100 mt-2 pt-2 px-4">
+                      <Link
+                        href="/register"
+                        className="flex items-center gap-2 py-2 text-sm font-medium text-purple-600 hover:text-purple-700"
+                      >
+                        <span>View all services</span>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <Link
-                href="/out-of-stock"
-                className="text-[#64748b] hover:text-[#1a1a2e] transition-colors font-medium relative group"
+                href="/#pricing"
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors rounded-lg hover:bg-gray-50"
               >
-                Out of Stock
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff6b35] transition-all group-hover:w-full" />
+                Pricing
               </Link>
-              <Link
-                href="/ajio-mail"
-                className="text-[#64748b] hover:text-[#1a1a2e] transition-colors font-medium relative group"
-              >
-                Ajio Mail
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#00d9a5] transition-all group-hover:w-full" />
-              </Link>
+
+              <div className="w-px h-6 bg-gray-200 mx-2" />
+
               <Link
                 href="/login"
-                className="text-[#64748b] hover:text-[#1a1a2e] transition-colors font-medium"
+                className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors rounded-lg hover:bg-gray-50"
               >
                 Login
               </Link>
+
               <Link
                 href="/register"
-                className="btn-saffron text-sm py-2.5 px-5"
+                className="ml-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/25"
               >
                 Get Started
               </Link>
@@ -50,56 +112,132 @@ export default function MarketingLayout({
             <div className="md:hidden flex items-center gap-3">
               <Link
                 href="/login"
-                className="text-[#64748b] hover:text-[#1a1a2e] transition-colors font-medium text-sm"
+                className="text-gray-600 hover:text-gray-900 font-medium text-sm"
               >
                 Login
               </Link>
-              <Link
-                href="/register"
-                className="bg-[#ff6b35] text-white px-4 py-2 rounded-lg text-sm font-medium"
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50"
               >
-                Get Started
-              </Link>
+                {mobileMenuOpen ? (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
             </div>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 py-4 px-4">
+            <div className="space-y-1">
+              <p className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Services</p>
+              {services.map((service) => (
+                <Link
+                  key={service.name}
+                  href={service.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-gray-50"
+                >
+                  <span className="font-medium text-gray-900">{service.name}</span>
+                  {service.badge && (
+                    <span className="px-2 py-0.5 text-xs font-bold bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full">
+                      {service.badge}
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <Link
+                href="/register"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-center px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg"
+              >
+                Get Started Free
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main>{children}</main>
 
       {/* Footer */}
-      <footer className="bg-[#1a1a2e] text-white py-16 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-4 gap-12">
             {/* Brand */}
-            <div className="md:col-span-2">
-              <LogoSimple className="mb-4" />
-              <p className="text-[#64748b] text-sm max-w-sm leading-relaxed">
-                Powerful automation tools designed for Indian e-commerce sellers.
-                Manage inventory, automate responses, and grow your business.
+            <div className="md:col-span-1">
+              <Link href="/" className="flex items-center gap-2 mb-4">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">E</span>
+                </div>
+                <span className="font-bold text-xl">ecom-hub</span>
+              </Link>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Automation tools for Indian e-commerce sellers. Save hours every day.
               </p>
             </div>
 
-            {/* Features */}
+            {/* Services */}
             <div>
-              <h3 className="font-semibold mb-4 text-[#ff6b35]">Features</h3>
-              <ul className="space-y-3 text-[#94a3b8] text-sm">
+              <h3 className="font-semibold mb-4 text-white">Services</h3>
+              <ul className="space-y-3 text-gray-400 text-sm">
                 <li>
-                  <Link href="/out-of-stock" className="hover:text-white transition-colors flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[#ff6b35] rounded-full" />
-                    Out of Stock Management
+                  <Link href="/dashboard/out-of-stock" className="hover:text-white transition-colors">
+                    Out of Stock Monitor
                   </Link>
                 </li>
                 <li>
-                  <Link href="/ajio-mail" className="hover:text-white transition-colors flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[#00d9a5] rounded-full" />
-                    Ajio Mail Replying
+                  <Link href="/dashboard/orders" className="hover:text-white transition-colors">
+                    Orders Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link href="/get-started" className="hover:text-white transition-colors flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[#64748b] rounded-full" />
-                    Get Started Guide
+                  <Link href="/dashboard/catalog" className="hover:text-white transition-colors flex items-center gap-2">
+                    Catalog AI
+                    <span className="px-1.5 py-0.5 text-xs bg-green-500/20 text-green-400 rounded">New</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard/qc-pass" className="hover:text-white transition-colors flex items-center gap-2">
+                    QC Pass / RGP
+                    <span className="px-1.5 py-0.5 text-xs bg-green-500/20 text-green-400 rounded">New</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/dashboard/ajio-mail" className="hover:text-white transition-colors">
+                    Ajio Mail Automation
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="font-semibold mb-4 text-white">Company</h3>
+              <ul className="space-y-3 text-gray-400 text-sm">
+                <li>
+                  <Link href="/login" className="hover:text-white transition-colors">
+                    Sign In
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/register" className="hover:text-white transition-colors">
+                    Create Account
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/#pricing" className="hover:text-white transition-colors">
+                    Pricing
                   </Link>
                 </li>
               </ul>
@@ -107,16 +245,15 @@ export default function MarketingLayout({
 
             {/* Contact */}
             <div>
-              <h3 className="font-semibold mb-4 text-[#00d9a5]">Get in Touch</h3>
-              <p className="text-[#94a3b8] text-sm leading-relaxed">
-                Ready to automate your e-commerce operations?
-                Check out our documentation to get started.
+              <h3 className="font-semibold mb-4 text-white">Get Started</h3>
+              <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                Start automating your e-commerce operations today. Free to try.
               </p>
               <Link
-                href="/get-started"
-                className="inline-flex items-center gap-2 mt-4 text-[#ff6b35] hover:text-[#ff8c5a] transition-colors text-sm font-medium"
+                href="/register"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
               >
-                View Setup Guide
+                Start Free Trial
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -124,13 +261,16 @@ export default function MarketingLayout({
             </div>
           </div>
 
-          <div className="border-t border-[#2d2d44] mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[#64748b] text-sm">
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-500 text-sm">
               &copy; {new Date().getFullYear()} ecom-hub.in. All rights reserved.
             </p>
-            <div className="flex items-center gap-2 text-[#64748b] text-xs">
-              <span className="w-2 h-2 bg-[#22c55e] rounded-full animate-pulse" />
-              Systems operational
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              All systems operational
             </div>
           </div>
         </div>
