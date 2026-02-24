@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/context/AuthContext';
 
-const navigation = [
+// Main navigation items
+const mainNavigation = [
   {
     name: 'Dashboard',
     href: '/dashboard',
@@ -14,6 +15,10 @@ const navigation = [
       </svg>
     ),
   },
+];
+
+// Active services
+const activeServices = [
   {
     name: 'Out of Stock',
     href: '/dashboard/out-of-stock',
@@ -33,6 +38,24 @@ const navigation = [
     ),
   },
   {
+    name: 'Catalog AI',
+    href: '/dashboard/catalog',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'QC Pass/RGP',
+    href: '/dashboard/qc-pass',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
     name: 'Ajio Mail',
     href: '/dashboard/ajio-mail',
     icon: (
@@ -41,6 +64,50 @@ const navigation = [
       </svg>
     ),
   },
+];
+
+// Coming soon services
+const comingSoonServices = [
+  {
+    name: 'Flipkart Ticket',
+    href: '/dashboard/flipkart-ticket',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Myntra MOP',
+    href: '/dashboard/myntra-mop',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Myntra Brokenness',
+    href: '/dashboard/myntra-brokenness',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Shopify Returns',
+    href: '/dashboard/shopify-returns',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+      </svg>
+    ),
+  },
+];
+
+// Settings navigation
+const settingsNavigation = [
   {
     name: 'Integrations',
     href: '/dashboard/integrations',
@@ -94,8 +161,9 @@ export function Sidebar({ onClose }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1">
-        {navigation.map((item) => {
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+        {/* Main */}
+        {mainNavigation.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link
@@ -113,6 +181,75 @@ export function Sidebar({ onClose }: SidebarProps) {
             </Link>
           );
         })}
+
+        {/* Services */}
+        <div className="pt-4">
+          <p className="px-3 text-xs font-semibold text-[#6b7c93] uppercase tracking-wider mb-2">Services</p>
+          {activeServices.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={onClose}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${
+                  isActive
+                    ? 'bg-[#2bbd5e]/15 text-[#2bbd5e] font-medium'
+                    : 'text-[#a0aec0] hover:text-white hover:bg-[#2a3441]'
+                }`}
+              >
+                {item.icon}
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Coming Soon */}
+        <div className="pt-4">
+          <p className="px-3 text-xs font-semibold text-[#6b7c93] uppercase tracking-wider mb-2">Coming Soon</p>
+          {comingSoonServices.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={onClose}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${
+                  isActive
+                    ? 'bg-[#2bbd5e]/15 text-[#2bbd5e] font-medium'
+                    : 'text-[#6b7c93] hover:text-[#a0aec0] hover:bg-[#2a3441]'
+                }`}
+              >
+                {item.icon}
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Settings */}
+        <div className="pt-4">
+          <p className="px-3 text-xs font-semibold text-[#6b7c93] uppercase tracking-wider mb-2">Settings</p>
+          {settingsNavigation.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={onClose}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${
+                  isActive
+                    ? 'bg-[#2bbd5e]/15 text-[#2bbd5e] font-medium'
+                    : 'text-[#a0aec0] hover:text-white hover:bg-[#2a3441]'
+                }`}
+              >
+                {item.icon}
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
 
       {/* User section */}
