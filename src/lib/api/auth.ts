@@ -87,8 +87,11 @@ async function authFetch<T>(
 ): Promise<T> {
   const token = getAccessToken();
 
+  // Check if body is FormData - don't set Content-Type for FormData
+  const isFormData = options.body instanceof FormData;
+
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers as Record<string, string>),
   };
 
