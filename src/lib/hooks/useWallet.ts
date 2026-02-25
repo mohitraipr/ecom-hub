@@ -104,8 +104,13 @@ export function useWallet(): UseWalletReturn {
   );
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    // Load wallet and transactions on mount
+    async function init() {
+      await refresh();
+      await loadTransactions();
+    }
+    init();
+  }, [refresh, loadTransactions]);
 
   return {
     ...state,
