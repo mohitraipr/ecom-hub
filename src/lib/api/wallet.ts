@@ -16,7 +16,7 @@ export interface Wallet {
 
 export interface Transaction {
   id: string;
-  type: 'recharge' | 'usage' | 'refund' | 'bonus' | 'adjustment';
+  type: 'recharge' | 'usage' | 'refund' | 'bonus' | 'adjustment' | 'credit' | 'debit';
   amount: number;
   balanceAfter: number;
   description: string;

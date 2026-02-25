@@ -210,10 +210,108 @@ export default function WalletPage() {
         </div>
       </div>
 
-      {/* Transactions */}
+      {/* Transactions - Separated into Money Added and Money Spent */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Money Added Section */}
+        <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-[#1a1a2e]">Money Added</h2>
+              <p className="text-[#94a3b8] text-xs">Recharges & Refunds</p>
+            </div>
+          </div>
+
+          {transactions.filter(tx => tx.type === 'recharge' || tx.type === 'refund' || tx.type === 'credit').length === 0 ? (
+            <div className="text-center py-6">
+              <p className="text-[#64748b] text-sm">No recharges yet</p>
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-[400px] overflow-y-auto">
+              {transactions
+                .filter(tx => tx.type === 'recharge' || tx.type === 'refund' || tx.type === 'credit')
+                .map((tx) => (
+                  <div
+                    key={tx.id}
+                    className="flex items-center justify-between py-3 px-3 bg-emerald-50/50 rounded-lg border border-emerald-100"
+                  >
+                    <div className="flex items-center gap-3">
+                      {getTransactionIcon(tx.type)}
+                      <div>
+                        <p className="text-[#1a1a2e] font-medium text-sm">{tx.description}</p>
+                        <p className="text-[#94a3b8] text-xs">{formatDate(tx.createdAt)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-emerald-600">
+                        +₹{Math.abs(tx.amount).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+
+        {/* Money Spent Section */}
+        <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-saffron-100 flex items-center justify-center">
+              <svg className="w-5 h-5 text-saffron-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-[#1a1a2e]">Money Spent</h2>
+              <p className="text-[#94a3b8] text-xs">Service Usage</p>
+            </div>
+          </div>
+
+          {transactions.filter(tx => tx.type === 'usage' || tx.type === 'debit').length === 0 ? (
+            <div className="text-center py-6">
+              <p className="text-[#64748b] text-sm">No usage charges yet</p>
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-[400px] overflow-y-auto">
+              {transactions
+                .filter(tx => tx.type === 'usage' || tx.type === 'debit')
+                .map((tx) => (
+                  <div
+                    key={tx.id}
+                    className="flex items-center justify-between py-3 px-3 bg-saffron-50/50 rounded-lg border border-saffron-100"
+                  >
+                    <div className="flex items-center gap-3">
+                      {getTransactionIcon(tx.type)}
+                      <div>
+                        <p className="text-[#1a1a2e] font-medium text-sm">{tx.description}</p>
+                        <p className="text-[#94a3b8] text-xs">{formatDate(tx.createdAt)}</p>
+                        {tx.service && (
+                          <span className="inline-block mt-1 px-2 py-0.5 bg-[#f1f5f9] text-[#64748b] text-xs rounded">
+                            {tx.service}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-red-600">
+                        -₹{Math.abs(tx.amount).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* All Transactions with Pagination */}
       <div className="bg-white border border-[#e5e7eb] rounded-xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-[#1a1a2e]">Recent Transactions</h2>
+          <h2 className="text-lg font-semibold text-[#1a1a2e]">All Transactions</h2>
           {pagination && pagination.total > 0 && (
             <span className="text-[#94a3b8] text-sm">
               {pagination.total} total transactions
@@ -246,8 +344,8 @@ export default function WalletPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className={`font-semibold ${tx.type === 'recharge' || tx.type === 'refund' ? 'text-emerald-600' : 'text-red-600'}`}>
-                    {tx.type === 'recharge' || tx.type === 'refund' ? '+' : '-'}₹{Math.abs(tx.amount).toFixed(2)}
+                  <p className={`font-semibold ${tx.type === 'recharge' || tx.type === 'refund' || tx.type === 'credit' ? 'text-emerald-600' : 'text-red-600'}`}>
+                    {tx.type === 'recharge' || tx.type === 'refund' || tx.type === 'credit' ? '+' : '-'}₹{Math.abs(tx.amount).toFixed(2)}
                   </p>
                   <p className="text-[#94a3b8] text-xs">Balance: ₹{tx.balanceAfter.toFixed(2)}</p>
                 </div>
