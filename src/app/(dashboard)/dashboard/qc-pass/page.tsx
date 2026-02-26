@@ -15,6 +15,8 @@ import {
   getWarehouses,
   downloadResults,
   getServiceStatus,
+  startVM,
+  stopVM,
   QCJob,
   QCResult,
   ServiceStatus,
@@ -35,6 +37,10 @@ export default function QCPassPage() {
   const [serviceStatus, setServiceStatus] = useState<ServiceStatus | null>(null);
   const [novncUrl, setNovncUrl] = useState<string | null>(null);
   const [showBrowserViewer, setShowBrowserViewer] = useState(false);
+
+  // VM control
+  const [vmStarting, setVmStarting] = useState(false);
+  const [vmStopping, setVmStopping] = useState(false);
 
   // New job form
   const [showNewJob, setShowNewJob] = useState(false);
@@ -68,6 +74,52 @@ export default function QCPassPage() {
       }
     } catch (err) {
       console.error('Failed to check service status:', err);
+    }
+  };
+
+  const handleStartVM = async () => {
+    setVmStarting(true);
+    setError('');
+    try {
+      const result = await startVM();
+      // Poll for status updates
+      const pollInterval = setInterval(async () => {
+        const status = await getServiceStatus();
+        setServiceStatus(status);
+        if (status.vm_status === 'running') {
+          clearInterval(pollInterval);
+          setVmStarting(false);
+          if (status.novnc_url) {
+            setNovncUrl(status.novnc_url);
+          }
+        }
+      }, 5000);
+      // Timeout after 2 minutes
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        setVmStarting(false);
+      }, 120000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to start VM');
+      setVmStarting(false);
+    }
+  };
+
+  const handleStopVM = async () => {
+    if (!confirm('Stop the QC Pass VM? This will save costs but you will need to restart it next time.')) return;
+
+    setVmStopping(true);
+    setError('');
+    try {
+      await stopVM();
+      // Wait and refresh status
+      setTimeout(async () => {
+        await checkServiceStatus();
+        setVmStopping(false);
+      }, 5000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to stop VM');
+      setVmStopping(false);
     }
   };
 
@@ -289,16 +341,54 @@ export default function QCPassPage() {
           <p className="text-[#8b9dc3] mt-1">Automate Myntra QC Pass, RTO, and Return processing</p>
         </div>
         <div className="flex items-center gap-3">
-          {/* Service Status */}
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
-            serviceStatus?.available
-              ? 'bg-emerald-500/20 text-emerald-400'
-              : 'bg-amber-500/20 text-amber-400'
-          }`}>
-            <span className={`w-2 h-2 rounded-full ${
-              serviceStatus?.available ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
-            }`}></span>
-            {serviceStatus?.available ? 'Service Online' : 'Service Offline'}
+          {/* VM Status & Controls */}
+          <div className="flex items-center gap-2">
+            {serviceStatus?.vm_status === 'running' ? (
+              <>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-emerald-500/20 text-emerald-400">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  VM Running
+                </div>
+                <button
+                  onClick={handleStopVM}
+                  disabled={vmStopping}
+                  className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                  title="Stop VM to save costs"
+                >
+                  {vmStopping ? 'Stopping...' : 'Stop VM'}
+                </button>
+              </>
+            ) : serviceStatus?.vm_status === 'stopping' || vmStopping ? (
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-amber-500/20 text-amber-400">
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                VM Stopping...
+              </div>
+            ) : serviceStatus?.vm_status === 'staging' || vmStarting ? (
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-400">
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                VM Starting... (30-60s)
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-gray-500/20 text-gray-400">
+                  <span className="w-2 h-2 rounded-full bg-gray-400"></span>
+                  VM Stopped
+                </div>
+                <button
+                  onClick={handleStartVM}
+                  disabled={vmStarting}
+                  className="px-3 py-1 bg-[#2bbd5e] hover:bg-[#25a852] text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                >
+                  {vmStarting ? 'Starting...' : 'Start VM'}
+                </button>
+              </>
+            )}
           </div>
           <span className="px-3 py-1 bg-[#2bbd5e]/20 text-[#2bbd5e] rounded-full text-sm font-medium">
             Rs0.50 per tracking ID
@@ -677,10 +767,18 @@ export default function QCPassPage() {
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                           </svg>
-                          <span className="font-medium">QC Pass Service Not Running</span>
+                          <span className="font-medium">
+                            {serviceStatus?.vm_status === 'stopped' || serviceStatus?.vm_status === 'terminated'
+                              ? 'QC Pass VM is Stopped'
+                              : 'QC Pass Service Starting...'}
+                          </span>
                         </div>
                         <p className="text-[#8b9dc3] text-sm">
-                          The QC Pass service needs to be deployed. Contact support if browser automation is not working.
+                          {serviceStatus?.vm_status === 'stopped' || serviceStatus?.vm_status === 'terminated' ? (
+                            <>Click the "Start VM" button above to enable browser automation. The VM takes 30-60 seconds to start.</>
+                          ) : serviceStatus?.message || (
+                            <>The service is starting up. Please wait 30-60 seconds...</>
+                          )}
                         </p>
                       </div>
                     )}

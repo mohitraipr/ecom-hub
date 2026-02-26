@@ -248,11 +248,56 @@ export interface ServiceStatus {
   service_url: string;
   novnc_url?: string;
   message?: string;
+  vm_status?: string;
+  vm_ip?: string;
 }
 
 export async function getServiceStatus(): Promise<ServiceStatus> {
   const response = await authFetch<{ success: boolean; data: ServiceStatus }>(
     '/api/qcpass/service-status'
+  );
+  return response.data;
+}
+
+/**
+ * VM Status interface
+ */
+export interface VMStatus {
+  status: string;
+  external_ip: string | null;
+  name: string;
+  zone: string;
+  novnc_url: string | null;
+}
+
+/**
+ * Get VM status
+ */
+export async function getVMStatus(): Promise<VMStatus> {
+  const response = await authFetch<{ success: boolean; data: VMStatus }>(
+    '/api/qcpass/vm/status'
+  );
+  return response.data;
+}
+
+/**
+ * Start VM
+ */
+export async function startVM(): Promise<{ status: string; message: string; external_ip?: string }> {
+  const response = await authFetch<{ success: boolean; data: { status: string; message: string; external_ip?: string } }>(
+    '/api/qcpass/vm/start',
+    { method: 'POST' }
+  );
+  return response.data;
+}
+
+/**
+ * Stop VM
+ */
+export async function stopVM(): Promise<{ status: string; message: string }> {
+  const response = await authFetch<{ success: boolean; data: { status: string; message: string } }>(
+    '/api/qcpass/vm/stop',
+    { method: 'POST' }
   );
   return response.data;
 }
