@@ -28,6 +28,8 @@ export default function WalletPage() {
         if (data.success && data.data.minRechargeAmount) {
           const minAmount = data.data.minRechargeAmount;
           setMinRechargeAmount(minAmount);
+          // Clear any stale error messages when new settings arrive
+          setRechargeError('');
           // Update recharge amounts to ensure minimum is included
           if (minAmount < 100) {
             setRechargeAmounts([minAmount, 100, 500, 1000, 2000, 5000].filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 6));
