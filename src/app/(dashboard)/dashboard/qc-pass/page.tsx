@@ -14,8 +14,10 @@ import {
   getJobResults,
   getWarehouses,
   downloadResults,
+  getServiceStatus,
   QCJob,
   QCResult,
+  ServiceStatus,
 } from '@/lib/api/qcpass';
 
 type JobType = 'qcpass' | 'rto' | 'return';
@@ -29,6 +31,11 @@ export default function QCPassPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Service status and browser viewer
+  const [serviceStatus, setServiceStatus] = useState<ServiceStatus | null>(null);
+  const [novncUrl, setNovncUrl] = useState<string | null>(null);
+  const [showBrowserViewer, setShowBrowserViewer] = useState(false);
+
   // New job form
   const [showNewJob, setShowNewJob] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -41,15 +48,28 @@ export default function QCPassPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load jobs and warehouses
+  // Load jobs, warehouses, and service status
   useEffect(() => {
     loadData();
+    checkServiceStatus();
     return () => {
       if (pollIntervalRef.current) {
         clearInterval(pollIntervalRef.current);
       }
     };
   }, []);
+
+  const checkServiceStatus = async () => {
+    try {
+      const status = await getServiceStatus();
+      setServiceStatus(status);
+      if (status.available && status.novnc_url) {
+        setNovncUrl(status.novnc_url);
+      }
+    } catch (err) {
+      console.error('Failed to check service status:', err);
+    }
+  };
 
   // Poll for job updates when there's an active job
   useEffect(() => {
@@ -134,9 +154,15 @@ export default function QCPassPage() {
     if (!selectedJob) return;
 
     try {
-      await launchJob(selectedJob.id);
+      const result = await launchJob(selectedJob.id);
       const updated = await getJob(selectedJob.id);
       setSelectedJob(updated);
+
+      // Store noVNC URL and show browser viewer
+      if (result.novnc_url) {
+        setNovncUrl(result.novnc_url);
+        setShowBrowserViewer(true);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to launch job');
     }
@@ -263,6 +289,17 @@ export default function QCPassPage() {
           <p className="text-[#8b9dc3] mt-1">Automate Myntra QC Pass, RTO, and Return processing</p>
         </div>
         <div className="flex items-center gap-3">
+          {/* Service Status */}
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
+            serviceStatus?.available
+              ? 'bg-emerald-500/20 text-emerald-400'
+              : 'bg-amber-500/20 text-amber-400'
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${
+              serviceStatus?.available ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+            }`}></span>
+            {serviceStatus?.available ? 'Service Online' : 'Service Offline'}
+          </div>
           <span className="px-3 py-1 bg-[#2bbd5e]/20 text-[#2bbd5e] rounded-full text-sm font-medium">
             Rs0.50 per tracking ID
           </span>
@@ -593,13 +630,60 @@ export default function QCPassPage() {
                   )}
                 </div>
 
-                {/* Browser View Notice */}
+                {/* Browser View Section */}
                 {['launching', 'waiting', 'running'].includes(selectedJob.status) && selectedJob.processing_mode === 'browser' && (
-                  <div className="mt-4 p-4 bg-[#151b27] rounded-lg">
-                    <p className="text-[#8b9dc3] text-sm">
-                      <strong className="text-white">Browser View:</strong> The QC Pass service runs in a separate container with noVNC.
-                      When deployed, you can view the browser at the noVNC URL.
-                    </p>
+                  <div className="mt-4">
+                    {serviceStatus?.available && novncUrl ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                            <span className="text-white font-medium">Live Browser View</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setShowBrowserViewer(!showBrowserViewer)}
+                              className="px-3 py-1 bg-[#2a3441] hover:bg-[#3a4451] text-[#8b9dc3] rounded-lg text-sm transition-colors"
+                            >
+                              {showBrowserViewer ? 'Hide' : 'Show'} Browser
+                            </button>
+                            <a
+                              href={novncUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-1 bg-[#2a3441] hover:bg-[#3a4451] text-[#8b9dc3] rounded-lg text-sm transition-colors"
+                            >
+                              Open in New Tab
+                            </a>
+                          </div>
+                        </div>
+                        {showBrowserViewer && (
+                          <div className="bg-[#151b27] rounded-lg overflow-hidden border border-[#2a3441]">
+                            <iframe
+                              src={novncUrl}
+                              className="w-full h-[500px] border-0"
+                              title="QC Pass Browser View"
+                              allow="clipboard-read; clipboard-write"
+                            />
+                          </div>
+                        )}
+                        <p className="text-[#6b7c93] text-xs">
+                          Login to Flipkart/Myntra in the browser above, then click "I'm Ready - Start Processing"
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                        <div className="flex items-center gap-2 text-amber-400 mb-2">
+                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                          <span className="font-medium">QC Pass Service Not Running</span>
+                        </div>
+                        <p className="text-[#8b9dc3] text-sm">
+                          The QC Pass service needs to be deployed. Contact support if browser automation is not working.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

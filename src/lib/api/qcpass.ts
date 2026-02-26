@@ -239,3 +239,20 @@ export function downloadResults(results: QCResult[], filename: string = 'qc_resu
   link.click();
   URL.revokeObjectURL(link.href);
 }
+
+/**
+ * Get QC Pass service status
+ */
+export interface ServiceStatus {
+  available: boolean;
+  service_url: string;
+  novnc_url?: string;
+  message?: string;
+}
+
+export async function getServiceStatus(): Promise<ServiceStatus> {
+  const response = await authFetch<{ success: boolean; data: ServiceStatus }>(
+    '/api/qcpass/service-status'
+  );
+  return response.data;
+}
