@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWallet } from '@/lib/hooks/useWallet';
 import { useAuth } from '@/lib/context/AuthContext';
+import { config } from '@/lib/config';
 
-const RECHARGE_AMOUNTS = [100, 500, 1000, 2000, 5000];
+const DEFAULT_RECHARGE_AMOUNTS = [100, 500, 1000, 2000, 5000];
 
 export default function WalletPage() {
   const { user } = useAuth();
@@ -15,12 +16,37 @@ export default function WalletPage() {
   const [showRechargeModal, setShowRechargeModal] = useState(false);
   const [rechargeError, setRechargeError] = useState('');
   const [rechargeSuccess, setRechargeSuccess] = useState('');
+  const [minRechargeAmount, setMinRechargeAmount] = useState(100);
+  const [rechargeAmounts, setRechargeAmounts] = useState(DEFAULT_RECHARGE_AMOUNTS);
+
+  // Fetch platform settings on mount
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const response = await fetch(`${config.apiBaseUrl}/api/wallet/settings`);
+        const data = await response.json();
+        if (data.success && data.data.minRechargeAmount) {
+          const minAmount = data.data.minRechargeAmount;
+          setMinRechargeAmount(minAmount);
+          // Update recharge amounts to ensure minimum is included
+          if (minAmount < 100) {
+            setRechargeAmounts([minAmount, 100, 500, 1000, 2000, 5000].filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 6));
+          } else if (minAmount > 100) {
+            setRechargeAmounts([minAmount, 500, 1000, 2000, 5000].filter(a => a >= minAmount).slice(0, 5));
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch wallet settings:', err);
+      }
+    }
+    fetchSettings();
+  }, []);
 
   const handleRecharge = async () => {
     const amount = customAmount ? parseFloat(customAmount) : rechargeAmount;
 
-    if (amount < 100) {
-      setRechargeError('Minimum recharge amount is Rs100');
+    if (amount < minRechargeAmount) {
+      setRechargeError(`Minimum recharge amount is Rs${minRechargeAmount}`);
       return;
     }
 
@@ -406,7 +432,7 @@ export default function WalletPage() {
                   Select Amount
                 </label>
                 <div className="grid grid-cols-3 gap-2">
-                  {RECHARGE_AMOUNTS.map((amount) => (
+                  {rechargeAmounts.map((amount) => (
                     <button
                       key={amount}
                       onClick={() => {
@@ -436,11 +462,11 @@ export default function WalletPage() {
                     value={customAmount}
                     onChange={(e) => setCustomAmount(e.target.value)}
                     placeholder="Enter amount"
-                    min="100"
+                    min={minRechargeAmount}
                     className="w-full pl-10 pr-4 py-3 bg-white border border-[#e5e7eb] rounded-lg text-[#1a1a2e] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-saffron-500 focus:border-saffron-500"
                   />
                 </div>
-                <p className="text-[#94a3b8] text-xs mt-1">Minimum recharge: ₹100</p>
+                <p className="text-[#94a3b8] text-xs mt-1">Minimum recharge: ₹{minRechargeAmount}</p>
               </div>
 
               <div className="bg-[#f1f5f9] rounded-lg p-4">
