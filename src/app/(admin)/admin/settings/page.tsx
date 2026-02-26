@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { authFetch } from '@/lib/api/auth';
-import { config } from '@/lib/config';
 
 interface PlatformSettings {
   min_recharge_amount: number;
@@ -37,20 +36,30 @@ export default function AdminSettingsPage() {
   const fetchSettings = async () => {
     try {
       setLoading(true);
-      const response = await authFetch(`${config.apiBaseUrl}/api/admin/settings`);
-      const data = await response.json();
+      interface SettingValue {
+        value: string | number | boolean;
+        type: string;
+        description: string;
+      }
+      interface SettingsResponse {
+        success: boolean;
+        data: {
+          settings: Record<string, SettingValue>;
+        };
+      }
+      const data = await authFetch<SettingsResponse>('/api/admin/settings');
 
       if (data.success && data.data.settings) {
         const s = data.data.settings;
         setSettings({
-          min_recharge_amount: s.min_recharge_amount?.value ?? 100,
-          free_webhook_quota: s.free_webhook_quota?.value ?? 50,
-          low_balance_threshold: s.low_balance_threshold?.value ?? 100,
-          webhook_price_out_of_stock: s.webhook_price_out_of_stock?.value ?? 0.5,
-          webhook_price_orders: s.webhook_price_orders?.value ?? 0.5,
-          require_tenant_approval: s.require_tenant_approval?.value ?? false,
-          maintenance_mode: s.maintenance_mode?.value ?? false,
-          accept_new_registrations: s.accept_new_registrations?.value ?? true,
+          min_recharge_amount: Number(s.min_recharge_amount?.value ?? 100),
+          free_webhook_quota: Number(s.free_webhook_quota?.value ?? 50),
+          low_balance_threshold: Number(s.low_balance_threshold?.value ?? 100),
+          webhook_price_out_of_stock: Number(s.webhook_price_out_of_stock?.value ?? 0.5),
+          webhook_price_orders: Number(s.webhook_price_orders?.value ?? 0.5),
+          require_tenant_approval: Boolean(s.require_tenant_approval?.value ?? false),
+          maintenance_mode: Boolean(s.maintenance_mode?.value ?? false),
+          accept_new_registrations: Boolean(s.accept_new_registrations?.value ?? true),
         });
       }
     } catch (error) {
@@ -66,13 +75,15 @@ export default function AdminSettingsPage() {
     setMessage(null);
 
     try {
-      const response = await authFetch(`${config.apiBaseUrl}/api/admin/settings`, {
+      interface SaveResponse {
+        success: boolean;
+        error?: { message: string };
+      }
+      const data = await authFetch<SaveResponse>('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ settings }),
       });
-
-      const data = await response.json();
 
       if (data.success) {
         setMessage({ type: 'success', text: 'Settings saved successfully!' });
