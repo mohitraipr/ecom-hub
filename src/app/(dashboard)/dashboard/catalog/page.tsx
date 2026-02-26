@@ -147,12 +147,12 @@ export default function CatalogPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Catalog AI</h1>
-          <p className="text-[#8b9dc3] mt-1">Generate product attributes from images using AI</p>
+          <h1 className="text-3xl font-bold text-[#1a1a2e]">Catalog AI</h1>
+          <p className="text-[#64748b] mt-1">Generate product attributes from images using AI</p>
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <span className="text-[#8b9dc3]">Pricing:</span>
-          <span className="px-3 py-1 bg-[#2bbd5e]/20 text-[#2bbd5e] rounded-full font-medium">
+          <span className="text-[#64748b]">Pricing:</span>
+          <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full font-medium">
             Rs1 per 3 images
           </span>
         </div>
@@ -160,8 +160,13 @@ export default function CatalogPage() {
 
       {/* Error Display */}
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-red-400">
-          {error}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center justify-between">
+          <span>{error}</span>
+          <button onClick={() => setError('')} className="text-red-500 hover:text-red-700">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       )}
 
@@ -172,10 +177,10 @@ export default function CatalogPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Drop Zone */}
             <div
-              className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
+              className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
                 isDragging
-                  ? 'border-[#2bbd5e] bg-[#2bbd5e]/10'
-                  : 'border-[#2a3441] hover:border-[#3a4451]'
+                  ? 'border-emerald-500 bg-emerald-50'
+                  : 'border-gray-300 hover:border-gray-400 bg-white'
               }`}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
@@ -190,23 +195,23 @@ export default function CatalogPage() {
                 className="hidden"
                 onChange={(e) => handleImageSelect(e.target.files)}
               />
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#2a3441] flex items-center justify-center">
-                <svg className="w-8 h-8 text-[#8b9dc3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
+                <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <p className="text-white font-medium mb-1">Drop images here or click to upload</p>
-              <p className="text-[#8b9dc3] text-sm">Supports JPG, PNG, WebP (max 10MB each, up to 50 images)</p>
+              <p className="text-[#1a1a2e] font-medium mb-1">Drop images here or click to upload</p>
+              <p className="text-[#64748b] text-sm">Supports JPG, PNG, WebP (max 10MB each, up to 50 images)</p>
             </div>
 
             {/* Image Preview Grid */}
             {images.length > 0 && (
-              <div className="bg-[#1e2533] rounded-xl p-4">
+              <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-white font-medium">{images.length} images selected</h3>
+                  <h3 className="text-[#1a1a2e] font-medium">{images.length} images selected</h3>
                   <button
                     onClick={() => setImages([])}
-                    className="text-sm text-red-400 hover:text-red-300"
+                    className="text-sm text-red-600 hover:text-red-700"
                   >
                     Clear all
                   </button>
@@ -217,7 +222,7 @@ export default function CatalogPage() {
                       <img
                         src={URL.createObjectURL(file)}
                         alt={file.name}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-cover rounded-lg border border-gray-200"
                       />
                       <button
                         onClick={(e) => {
@@ -240,12 +245,12 @@ export default function CatalogPage() {
           {/* Right Column - Settings */}
           <div className="space-y-6">
             {/* Category */}
-            <div className="bg-[#1e2533] rounded-xl p-4">
-              <label className="block text-white font-medium mb-3">Category *</label>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
+              <label className="block text-[#1a1a2e] font-medium mb-3">Category *</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#151b27] border border-[#2a3441] rounded-lg text-white focus:outline-none focus:border-[#2bbd5e]"
+                className="w-full px-4 py-2.5 bg-white border border-[#e5e7eb] rounded-lg text-[#1a1a2e] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               >
                 <option value="">Select category...</option>
                 {categories.map(cat => (
@@ -257,13 +262,13 @@ export default function CatalogPage() {
                 placeholder="Or enter custom category"
                 value={categories.includes(category) ? '' : category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full mt-2 px-4 py-2.5 bg-[#151b27] border border-[#2a3441] rounded-lg text-white placeholder-[#6b7c93] focus:outline-none focus:border-[#2bbd5e]"
+                className="w-full mt-2 px-4 py-2.5 bg-white border border-[#e5e7eb] rounded-lg text-[#1a1a2e] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               />
             </div>
 
             {/* Attributes */}
-            <div className="bg-[#1e2533] rounded-xl p-4">
-              <label className="block text-white font-medium mb-3">Attributes to Extract *</label>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
+              <label className="block text-[#1a1a2e] font-medium mb-3">Attributes to Extract *</label>
               <div className="flex flex-wrap gap-2 mb-3">
                 {commonAttributes.map(attr => {
                   const isSelected = attributes.split(',').map(a => a.trim()).includes(attr);
@@ -273,8 +278,8 @@ export default function CatalogPage() {
                       onClick={() => toggleAttribute(attr)}
                       className={`px-3 py-1 rounded-full text-sm transition-colors ${
                         isSelected
-                          ? 'bg-[#2bbd5e] text-white'
-                          : 'bg-[#2a3441] text-[#8b9dc3] hover:bg-[#3a4451]'
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-gray-100 text-[#64748b] hover:bg-gray-200'
                       }`}
                     >
                       {attr}
@@ -287,13 +292,13 @@ export default function CatalogPage() {
                 onChange={(e) => setAttributes(e.target.value)}
                 placeholder="Or enter comma-separated attributes..."
                 rows={2}
-                className="w-full px-4 py-2.5 bg-[#151b27] border border-[#2a3441] rounded-lg text-white placeholder-[#6b7c93] focus:outline-none focus:border-[#2bbd5e] resize-none"
+                className="w-full px-4 py-2.5 bg-white border border-[#e5e7eb] rounded-lg text-[#1a1a2e] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none"
               />
             </div>
 
             {/* Optional Sheets */}
-            <div className="bg-[#1e2533] rounded-xl p-4">
-              <label className="block text-white font-medium mb-3">Optional Files</label>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
+              <label className="block text-[#1a1a2e] font-medium mb-3">Optional Files</label>
 
               {/* Attribute Sheet */}
               <div className="mb-3">
@@ -306,14 +311,14 @@ export default function CatalogPage() {
                 />
                 <button
                   onClick={() => attrSheetRef.current?.click()}
-                  className="w-full flex items-center justify-between px-4 py-2.5 bg-[#151b27] border border-[#2a3441] rounded-lg text-[#8b9dc3] hover:border-[#3a4451] transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50 border border-[#e5e7eb] rounded-lg text-[#64748b] hover:bg-gray-100 transition-colors"
                 >
                   <span>{attributeSheet?.name || 'Attribute Options Sheet'}</span>
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                 </button>
-                <p className="text-xs text-[#6b7c93] mt-1">Excel with allowed values for each attribute</p>
+                <p className="text-xs text-[#94a3b8] mt-1">Excel with allowed values for each attribute</p>
               </div>
 
               {/* Size Sheet */}
@@ -327,28 +332,28 @@ export default function CatalogPage() {
                 />
                 <button
                   onClick={() => sizeSheetRef.current?.click()}
-                  className="w-full flex items-center justify-between px-4 py-2.5 bg-[#151b27] border border-[#2a3441] rounded-lg text-[#8b9dc3] hover:border-[#3a4451] transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50 border border-[#e5e7eb] rounded-lg text-[#64748b] hover:bg-gray-100 transition-colors"
                 >
                   <span>{sizeSheet?.name || 'Size Mapping Sheet'}</span>
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                 </button>
-                <p className="text-xs text-[#6b7c93] mt-1">Excel with SKU to size mappings</p>
+                <p className="text-xs text-[#94a3b8] mt-1">Excel with SKU to size mappings</p>
               </div>
             </div>
 
             {/* Cost Estimate & Process */}
-            <div className="bg-[#1e2533] rounded-xl p-4">
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
               {estimate && (
-                <div className="mb-4 p-3 bg-[#151b27] rounded-lg">
+                <div className="mb-4 p-3 bg-emerald-50 border border-emerald-100 rounded-lg">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#8b9dc3]">Images:</span>
-                    <span className="text-white">{estimate.imageCount}</span>
+                    <span className="text-[#64748b]">Images:</span>
+                    <span className="text-[#1a1a2e]">{estimate.imageCount}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm mt-1">
-                    <span className="text-[#8b9dc3]">Estimated Cost:</span>
-                    <span className="text-[#2bbd5e] font-medium">Rs{estimate.estimatedCost.toFixed(2)}</span>
+                    <span className="text-[#64748b]">Estimated Cost:</span>
+                    <span className="text-emerald-700 font-medium">Rs{estimate.estimatedCost.toFixed(2)}</span>
                   </div>
                 </div>
               )}
@@ -356,7 +361,7 @@ export default function CatalogPage() {
               <button
                 onClick={handleProcess}
                 disabled={isProcessing || images.length === 0}
-                className="w-full py-3 bg-[#2bbd5e] hover:bg-[#25a852] disabled:bg-[#2a3441] disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 {isProcessing ? (
                   <>
@@ -380,29 +385,29 @@ export default function CatalogPage() {
         <div className="space-y-6">
           {/* Result Summary */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-[#1e2533] rounded-xl p-4">
-              <p className="text-[#8b9dc3] text-sm">Images Processed</p>
-              <p className="text-2xl font-bold text-white">{result.imagesProcessed}</p>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
+              <p className="text-[#64748b] text-sm">Images Processed</p>
+              <p className="text-2xl font-bold text-[#1a1a2e]">{result.imagesProcessed}</p>
             </div>
-            <div className="bg-[#1e2533] rounded-xl p-4">
-              <p className="text-[#8b9dc3] text-sm">Rows Generated</p>
-              <p className="text-2xl font-bold text-white">{result.totalRows}</p>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
+              <p className="text-[#64748b] text-sm">Rows Generated</p>
+              <p className="text-2xl font-bold text-[#1a1a2e]">{result.totalRows}</p>
             </div>
-            <div className="bg-[#1e2533] rounded-xl p-4">
-              <p className="text-[#8b9dc3] text-sm">Cost</p>
-              <p className="text-2xl font-bold text-[#2bbd5e]">Rs{result.cost.toFixed(2)}</p>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
+              <p className="text-[#64748b] text-sm">Cost</p>
+              <p className="text-2xl font-bold text-emerald-600">Rs{result.cost.toFixed(2)}</p>
             </div>
-            <div className="bg-[#1e2533] rounded-xl p-4">
-              <p className="text-[#8b9dc3] text-sm">Errors</p>
-              <p className="text-2xl font-bold text-white">{result.errors?.length || 0}</p>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl p-4 shadow-sm">
+              <p className="text-[#64748b] text-sm">Errors</p>
+              <p className="text-2xl font-bold text-[#1a1a2e]">{result.errors?.length || 0}</p>
             </div>
           </div>
 
           {/* Error List */}
           {result.errors && result.errors.length > 0 && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-              <h3 className="text-red-400 font-medium mb-2">Processing Errors</h3>
-              <ul className="space-y-1 text-sm text-red-300">
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+              <h3 className="text-red-700 font-medium mb-2">Processing Errors</h3>
+              <ul className="space-y-1 text-sm text-red-600">
                 {result.errors.map((err, i) => (
                   <li key={i}>
                     <span className="font-medium">{err.filename}:</span> {err.error}
@@ -414,13 +419,13 @@ export default function CatalogPage() {
 
           {/* Results Table */}
           {result.rows.length > 0 && (
-            <div className="bg-[#1e2533] rounded-xl overflow-hidden">
-              <div className="flex items-center justify-between p-4 border-b border-[#2a3441]">
-                <h3 className="text-white font-medium">Generated Catalog Data</h3>
+            <div className="bg-white border border-[#e5e7eb] rounded-xl overflow-hidden shadow-sm">
+              <div className="flex items-center justify-between p-4 border-b border-[#e5e7eb]">
+                <h3 className="text-[#1a1a2e] font-medium">Generated Catalog Data</h3>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleDownload}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#2bbd5e] hover:bg-[#25a852] text-white rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -429,7 +434,7 @@ export default function CatalogPage() {
                   </button>
                   <button
                     onClick={handleReset}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#2a3441] hover:bg-[#3a4451] text-white rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-[#1a1a2e] rounded-lg transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -441,19 +446,19 @@ export default function CatalogPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-[#151b27]">
+                    <tr className="bg-gray-50">
                       {Object.keys(result.rows[0]).map(header => (
-                        <th key={header} className="px-4 py-3 text-left text-xs font-medium text-[#8b9dc3] uppercase tracking-wider whitespace-nowrap">
+                        <th key={header} className="px-4 py-3 text-left text-xs font-medium text-[#64748b] uppercase tracking-wider whitespace-nowrap">
                           {header}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#2a3441]">
+                  <tbody className="divide-y divide-[#e5e7eb]">
                     {result.rows.slice(0, 50).map((row, index) => (
-                      <tr key={index} className="hover:bg-[#252d3a]">
+                      <tr key={index} className="hover:bg-gray-50">
                         {Object.values(row).map((value, i) => (
-                          <td key={i} className="px-4 py-3 text-sm text-white whitespace-nowrap">
+                          <td key={i} className="px-4 py-3 text-sm text-[#1a1a2e] whitespace-nowrap">
                             {String(value)}
                           </td>
                         ))}
@@ -462,7 +467,7 @@ export default function CatalogPage() {
                   </tbody>
                 </table>
                 {result.rows.length > 50 && (
-                  <div className="p-4 text-center text-[#8b9dc3] text-sm">
+                  <div className="p-4 text-center text-[#64748b] text-sm bg-gray-50">
                     Showing 50 of {result.rows.length} rows. Download CSV to see all.
                   </div>
                 )}
